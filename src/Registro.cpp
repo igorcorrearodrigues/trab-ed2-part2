@@ -1,4 +1,5 @@
-#include "../include/Registro.hpp"
+#include "Registro.hpp"
+#include "utils.hpp"
 
 #include <iostream>
 
@@ -81,56 +82,20 @@ std::ostream& Registro::print(std::ostream& os) const
 		<< this->cases() << "," << this->deaths();
 }
 
-static std::string string_tok(const std::string *s, char delim)
-{
-	static size_t pos = 0;
-	static const std::string *sptr;
-
-	if (s) {
-		sptr = s;
-		pos = 0;
-	}
-
-	if (pos == sptr->length())
-		return "";
-
-	std::string tok;
-
-	if (delim == '\0') {
-		tok = sptr->substr(pos);
-		pos = sptr->length();
-
-		return tok;
-	}
-
-	while (sptr->at(pos) == delim)
-		++pos;
-
-	size_t end = sptr->find(delim, pos);
-
-	/* Se não encontrou 'delim' */
-	if (end == std::string::npos) {
-		tok = sptr->substr(pos);
-		pos = sptr->length();
-	} else {
-		tok = sptr->substr(pos, end - pos);
-		pos = end + 1;
-	}
-	return tok;
-}
 
 std::istream& Registro::read(std::istream& is)
 {
 	std::string line;
+	size_t pos = 0;
 
 	if (std::getline(is, line)) {
 		// Adicionar alguma forma de tratamento de erros nessa funcao
-		this->setDate(string_tok(&line, ','));
-		this->setState(string_tok(nullptr, ','));
-		this->setCity(string_tok(nullptr, ','));
-		this->setCode(string_tok(nullptr, ','));
-		this->setCases(std::stoi(string_tok(nullptr, ',').c_str()));
-		this->setDeaths(std::stoi(string_tok(nullptr, '\0').c_str()));
+		this->setDate(string_tok(line, ',', &pos));
+		this->setState(string_tok(line, ',', &pos));
+		this->setCity(string_tok(line, ',', &pos));
+		this->setCode(string_tok(line, ',', &pos));
+		this->setCases(std::stoi(string_tok(line, ',', &pos)));
+		this->setDeaths(std::stoi(string_tok(line, '\0', &pos)));
 	}
 	return is;
 }
