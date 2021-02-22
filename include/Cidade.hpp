@@ -11,23 +11,24 @@ private:
 	std::string _nome;
 	double _latitude;
 	double _longitude;
-	unsigned _codigo;
-	uint8_t _codigoDoEstado;
+	int _codigo;
+	int _codigoDoEstado;
 	bool _isCapital;
 
 public:
 	const std::string& nome() const;
 	double latitude() const;
 	double longitude() const;
-	unsigned codigo() const;
-	uint8_t codigoDoEstado() const;
+	int codigo() const;
+	int codigoDoEstado() const;
 	bool isCapital() const;
 
 	void setNome(const std::string& nome);
 	void setLatitude(double latitude);
 	void setLongitude(double longitude);
-	void setCodigo(unsigned codigo);
-	void setCodigoDoEstado(unsigned codigo);
+	void setCodigo(int codigo);
+	void setCodigoDoEstado(int codigo);
+	void setCapital(bool isCapital);
 
 	std::ostream& print(std::ostream& out) const;
 	std::istream& read(std::istream& in);

@@ -1,8 +1,8 @@
 #include "utils.hpp"
 
-std::string string_tok(const std::string& s, char delim, size_t *position)
+std::string string_tok(const std::string& s, char delim, size_t *posptr)
 {
-	size_t pos = (position) ? (*position) : 0;
+	size_t pos = (posptr) ? (*posptr) : 0;
 
 	if (pos == s.length())
 		return "";
@@ -11,8 +11,8 @@ std::string string_tok(const std::string& s, char delim, size_t *position)
 
 	if (delim == '\0') {
 		tok = s.substr(pos);
-		if (position)
-			*position = s.length();
+		if (posptr)
+			*posptr = s.length();
 
 		return tok;
 	}
@@ -25,12 +25,12 @@ std::string string_tok(const std::string& s, char delim, size_t *position)
 	/* Se não encontrou 'delim' */
 	if (end == std::string::npos) {
 		tok = s.substr(pos);
-		if (position)
-			*position = s.length();
+		if (posptr)
+			*posptr = s.length();
 	} else {
 		tok = s.substr(pos, end - pos);
-		if (position)
-			*position = end + 1;
+		if (posptr)
+			*posptr = end + 1;
 	}
 	return tok;
 }
