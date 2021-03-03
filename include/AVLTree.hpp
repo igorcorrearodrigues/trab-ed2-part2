@@ -18,9 +18,13 @@ class AVLTree
         void setFBal();
 
         size_t getAltura(AVLTree* no);
+        AVLTree* getDir();
+        AVLTree* getEsq();
 
         void rotSDir(AVLTree* noP);
         void rotSEsq(AVLTree* noP);
+        void rotDDir(AVLTree* noP);
+        void rotDEsq(AVLTree* noP);
 
         void insere(size_t id);
 };
