@@ -1,4 +1,4 @@
-#include "AVLTree.hpp"
+#include "../include/AVLTree.hpp"
 
 #include <cmath>
 
@@ -6,6 +6,8 @@ AVLTree::AVLTree()
 {
     this->setDir(nullptr);
     this->setEsq(nullptr);
+    this->setFBal();
+    this->id = NULL;
 }
 
 void AVLTree::setDir(AVLTree* dir) { this->dir = dir; }
