@@ -23,6 +23,6 @@ class AVLTree
         void rotSEsq(AVLTree* noP);
 
         void insere(size_t id);
-}
+};
 
 #endif // AVLTREE_HPP
