@@ -1,5 +1,6 @@
 #include "./include/Quadtree.hpp"
 #include <iostream>
+#include <list>
 
 Quadtree::Quadtree() {
     this->c = NULL; 
@@ -71,3 +72,42 @@ void Quadtree::insere(Cidade* city)
             return;
     }
 } 
+
+void Quadtree::selecionaProximaRegiao(std::list<Cidade*> cidadesNaRegiao ,double lat0, double long0, double lat1, double long1){
+    if (this->quadNE != NULL){
+        if(this->quadNE->c->latitude() < lat1 && this->quadNE->c->latitude() > lat0 &&
+           this->quadNE->c->longitude() < long1 && this->quadNE->c->longitude() > long0){
+              cidadesNaRegiao.push_back(this->quadNE->c);
+              this->quadNE->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+        }
+    }
+    if (this->quadNW != NULL){
+        if(this->quadNW->c->latitude() < lat1 && this->quadNW->c->latitude() > lat0 &&
+           this->quadNW->c->longitude() < long1 && this->quadNW->c->longitude() > long0){
+               cidadesNaRegiao.push_back(this->quadNW->c);
+               this->quadNW->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+        }
+    }
+    if (this->quadSW != NULL){
+        if(this->quadSW->c->latitude() < lat1 && this->quadSW->c->latitude() > lat0 &&
+           this->quadSW->c->longitude() < long1 && this->quadSW->c->longitude() > long0){
+               cidadesNaRegiao.push_back(this->quadSW->c);
+               this->quadSW->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+        }
+    }
+    if (this->quadSE != NULL){
+        if(this->quadSE->c->latitude() < lat1 && this->quadSE->c->latitude() > lat0 &&
+           this->quadSE->c->longitude() < long1 && this->quadSE->c->longitude() > long0){
+               cidadesNaRegiao.push_back(this->quadSE->c);
+               this->quadSE->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+        }
+    }
+}
+
+std::list<Cidade*> Quadtree::buscaRegiao(double lat0, double long0, double lat1, double long1){
+    //delimitar as regioes dos quadrantes pra facilitar a busca (precisa ?)
+    //se long0 <= x <= long1 && lat0 <= y <= lat1, colocar na lista e chamar recursivamente a busca na regiao nova
+    std::list<Cidade*> cidadesNaRegiao = new std::list<Cidade*>;
+    selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+    
+}

@@ -13,12 +13,13 @@ private:
     Quadtree* quadSE;
     double coordX;
     double coordY;
-
+    
 public:
     Quadtree();
     size_t comparacao(Cidade novaCidade);
     void insere(Cidade* city);
-    //return uma lista com as cidade buscaRegiao(x0, y0, x1, y1);
+    void selecionaProximaRegiao(std::list<Cidade*> cidadesNaRegiao ,double lat0, double long0, double lat1, double long1);
+    std::list<Cidade*> buscaRegiao(double x0, double y0, double x1, double y1);
 };
 
 #endif // QUADTREE_HPP
