@@ -1,4 +1,5 @@
 #include "./include/Quadtree.hpp"
+#include <iostream>
 
 Quadtree::Quadtree() {
     this->c = NULL; 
@@ -11,7 +12,7 @@ Quadtree::Quadtree() {
 }
 
 //o numero do quadrante e igual no plano cartesiano mesmo
-size_t Quadtree::comparacao(Cidade* novaCidade){
+size_t Quadtree::comparacao(Cidade novaCidade){
     if(novaCidade.longitude() > this->coordX){
         if(novaCidade.latitude() > this->coordY){
             return 1; //NE
@@ -33,14 +34,14 @@ void Quadtree::insere(Cidade* city)
     if (city == NULL) 
         return;
 
-    if (this->c == NULL) 
+    if (this->c == NULL){
         this->c = city;
-        this->coordX = city.longitude();
-        this->coordY = city.latitude();
+        this->coordX = city->longitude();
+        this->coordY = city->latitude();
         return; 
     } 
     
-    size_t quadrante = comparacao(city);
+    size_t quadrante = comparacao(*city);
 
     switch(quadrante) {
         case 1: 

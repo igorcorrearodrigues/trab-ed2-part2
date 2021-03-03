@@ -6,7 +6,7 @@
 class Quadtree
 { 
 private:
-    Cidade* city; 
+    Cidade* c; 
     Quadtree* quadNW; 
     Quadtree* quadNE; 
     Quadtree* quadSW; 
@@ -16,7 +16,7 @@ private:
 
 public:
     Quadtree();
-    size_t comparacao(Cidade* novaCidade);
+    size_t comparacao(Cidade novaCidade);
     void insere(Cidade* city);
     //return uma lista com as cidade buscaRegiao(x0, y0, x1, y1);
 };
