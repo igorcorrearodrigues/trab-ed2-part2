@@ -12,16 +12,18 @@ Quadtree::Quadtree() {
 }
 
 //o numero do quadrante e igual no plano cartesiano mesmo
+//>= pra arestas, long igual joga pro lado E, lat igual joga pro lado N
+
 size_t Quadtree::comparacao(Cidade novaCidade){
-    if(novaCidade.longitude() > this->coordX){
-        if(novaCidade.latitude() > this->coordY){
+    if(novaCidade.longitude() >= this->coordX){
+        if(novaCidade.latitude() >= this->coordY){
             return 1; //NE
         }
         else
             return 4; //SE
     }
     else{
-        if(novaCidade.latitude() > this->coordY){
+        if(novaCidade.latitude() >= this->coordY){
             return 2; //NW
         }
         else
