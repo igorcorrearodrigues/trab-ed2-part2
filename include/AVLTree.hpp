@@ -13,11 +13,14 @@ class AVLTree
     public:
         AVLTree();
 
+        void setID(size_t id);
         void setEsq(AVLTree* esq);
         void setDir(AVLTree* dir);
         void setFBal();
 
         size_t getAltura(AVLTree* no);
+        size_t getID();
+        size_t getFBal();
         AVLTree* getDir();
         AVLTree* getEsq();
 
@@ -26,7 +29,7 @@ class AVLTree
         void rotDDir(AVLTree* noP);
         void rotDEsq(AVLTree* noP);
 
-        void insere(size_t id);
+        void insere(AVLTree* no, size_t id);
 };
 
 #endif // AVLTREE_HPP
