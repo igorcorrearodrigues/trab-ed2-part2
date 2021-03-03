@@ -1,6 +1,5 @@
 #include "./include/Quadtree.hpp"
 #include <iostream>
-#include <list>
 
 Quadtree::Quadtree() {
     this->c = NULL; 
@@ -107,7 +106,10 @@ void Quadtree::selecionaProximaRegiao(std::list<Cidade*> cidadesNaRegiao ,double
 std::list<Cidade*> Quadtree::buscaRegiao(double lat0, double long0, double lat1, double long1){
     //delimitar as regioes dos quadrantes pra facilitar a busca (precisa ?)
     //se long0 <= x <= long1 && lat0 <= y <= lat1, colocar na lista e chamar recursivamente a busca na regiao nova
-    std::list<Cidade*> cidadesNaRegiao = new std::list<Cidade*>;
+    std::list<Cidade*> cidadesNaRegiao;
     selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
-    
+    return cidadesNaRegiao;
+    //vai ser preciso uma hashing que garanta o inicio igual para cidades na mesma regiao, pq o csv usado na quad n tem as datas
+    //e pra pegar as cidaddes ao longo das datas na tabela hash depois pode complicar
+    //mod 10000 pra codigo cidade (mesmo estado tem os 2 primeiros digitos iguais) concatenando com hashing na data
 }

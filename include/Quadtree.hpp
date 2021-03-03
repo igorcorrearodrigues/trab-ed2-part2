@@ -2,6 +2,7 @@
 #define QUADTREE_HPP
 
 #include "Cidade.hpp"
+#include <list>
 
 class Quadtree
 { 
