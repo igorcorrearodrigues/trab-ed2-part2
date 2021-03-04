@@ -4,9 +4,13 @@ INC_DIR=./include
 
 MAIN_SRC=main.cpp             \
 				 ./src/Cidade.cpp     \
-				 ./src/string_tok.cpp 
+				 ./src/Registro.cpp   \
+				 ./src/HashTable.cpp  \
+				 ./src/string_tok.cpp
 
-MAIN_HPP=$(INC_DIR)/Cidade.hpp \
+MAIN_HPP=$(INC_DIR)/Cidade.hpp    \
+				 $(INC_DIR)/Registro.hpp  \
+				 $(INC_DIR)/HashTable.hpp \
 				 $(INC_DIR)/utils.hpp
 
 build: main
