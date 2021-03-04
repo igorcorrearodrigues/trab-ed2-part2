@@ -30,6 +30,7 @@ class AVLTree
         void rotDEsq(AVLTree* noP);
 
         void insere(AVLTree* no, size_t id);
+        bool busca(AVLTree* no, size_t id);
 };
 
 #endif // AVLTREE_HPP

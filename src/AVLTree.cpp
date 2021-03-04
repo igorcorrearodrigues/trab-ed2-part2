@@ -105,3 +105,15 @@ void AVLTree::insere(AVLTree* no, size_t id)
         }
     }
 }
+bool AVLTree::busca(AVLTree* no, size_t id) {
+    if (no->getID() == id)
+        return true;
+    else if (no == NULL)
+        return false;
+    else if (id < no->getID()) {
+        no->busca(no->getEsq(), id);
+    }
+    else {
+        no->busca(no->getDir(), id);
+    }
+}
