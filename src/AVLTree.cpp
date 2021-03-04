@@ -21,7 +21,7 @@ void AVLTree::setFBal()
 size_t AVLTree::getAltura(AVLTree* no) {
     if (no == NULL)
         return 0;
-    return 1 + fmax(getAltura(this->dir), getAltura(this->esq));
+    return 1 + fmax(getAltura(this->getDir()), getAltura(this->getEsq()));
 }
 size_t AVLTree::getID() { return this->id; }
 size_t AVLTree::getFBal() { return this->fbal; }
