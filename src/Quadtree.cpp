@@ -1,4 +1,4 @@
-#include "./include/Quadtree.hpp"
+#include "Quadtree.hpp"
 #include <iostream>
 
 Quadtree::Quadtree() {
