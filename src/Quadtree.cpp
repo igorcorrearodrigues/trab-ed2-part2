@@ -2,11 +2,11 @@
 #include <iostream>
 
 Quadtree::Quadtree() {
-    this->c = NULL; 
-    this->quadNW = NULL; 
-    this->quadNE = NULL; 
-    this->quadSW = NULL; 
-    this->quadSE = NULL;
+    this->c = nullptr; 
+    this->quadNW = nullptr; 
+    this->quadNE = nullptr; 
+    this->quadSW = nullptr; 
+    this->quadSE = nullptr;
     this->coordX = 0;
     this->coordY = 0;
 }
@@ -33,10 +33,10 @@ size_t Quadtree::comparacao(Cidade novaCidade){
 
 void Quadtree::insere(Cidade* city) 
 { 
-    if (city == NULL) 
+    if (city == nullptr) 
         return;
 
-    if (this->c == NULL){
+    if (this->c == nullptr){
         this->c = city;
         this->coordX = city->longitude();
         this->coordY = city->latitude();
@@ -47,22 +47,22 @@ void Quadtree::insere(Cidade* city)
 
     switch(quadrante) {
         case 1: 
-            if (this->quadNE == NULL) 
+            if (this->quadNE == nullptr) 
                 this->quadNE = new Quadtree();
             this->quadNE->insere(city); 
             break;
         case 2: 
-            if (this->quadNW == NULL) 
+            if (this->quadNW == nullptr) 
                 this->quadNW = new Quadtree();
             this->quadNW->insere(city); 
             break;
         case 3: 
-            if (this->quadSW == NULL) 
+            if (this->quadSW == nullptr) 
                 this->quadSW = new Quadtree();
             this->quadSW->insere(city); 
             break;
         case 4: 
-            if (this->quadSE == NULL) 
+            if (this->quadSE == nullptr) 
                 this->quadSE = new Quadtree();
             this->quadSE->insere(city); 
             break;
@@ -73,28 +73,28 @@ void Quadtree::insere(Cidade* city)
 } 
 
 void Quadtree::selecionaProximaRegiao(std::list<Cidade*> cidadesNaRegiao ,double lat0, double long0, double lat1, double long1){
-    if (this->quadNE != NULL){
+    if (this->quadNE != nullptr){
         if(this->quadNE->c->latitude() < lat1 && this->quadNE->c->latitude() > lat0 &&
            this->quadNE->c->longitude() < long1 && this->quadNE->c->longitude() > long0){
               cidadesNaRegiao.push_back(this->quadNE->c);
               this->quadNE->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
         }
     }
-    if (this->quadNW != NULL){
+    if (this->quadNW != nullptr){
         if(this->quadNW->c->latitude() < lat1 && this->quadNW->c->latitude() > lat0 &&
            this->quadNW->c->longitude() < long1 && this->quadNW->c->longitude() > long0){
                cidadesNaRegiao.push_back(this->quadNW->c);
                this->quadNW->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
         }
     }
-    if (this->quadSW != NULL){
+    if (this->quadSW != nullptr){
         if(this->quadSW->c->latitude() < lat1 && this->quadSW->c->latitude() > lat0 &&
            this->quadSW->c->longitude() < long1 && this->quadSW->c->longitude() > long0){
                cidadesNaRegiao.push_back(this->quadSW->c);
                this->quadSW->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
         }
     }
-    if (this->quadSE != NULL){
+    if (this->quadSE != nullptr){
         if(this->quadSE->c->latitude() < lat1 && this->quadSE->c->latitude() > lat0 &&
            this->quadSE->c->longitude() < long1 && this->quadSE->c->longitude() > long0){
                cidadesNaRegiao.push_back(this->quadSE->c);
