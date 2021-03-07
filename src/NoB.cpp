@@ -93,7 +93,7 @@ bool NoB::busca(int id)
 
 size_t NoB::procuraFilho(int id)
 {
-    size_t i = this->n - 1;
+    int i = this->n - 1;
     while (i >= 0 && this->chaves[i] > id)
         i--;
     
@@ -105,7 +105,7 @@ void NoB::insere(int id)
     // Se for folha, insere no nó atual
     // Condicao: nó nao deve estar cheio
     if (isFolha()) {
-        size_t i = this->n - 1;
+        int i = this->n - 1;
 
         // Move chaves maiores uma posicao à frente
         for ( ; i >= 0 && this->chaves[i] > id; i--)
@@ -160,4 +160,4 @@ void NoB::divideFilho(size_t i)
     this->atualizaN(this->n + 1);
     filho->atualizaN(this->m/2-1);
     novoFilho->atualizaN((this->m-1)/2);
-} 
+}
