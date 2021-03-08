@@ -4,29 +4,65 @@
 
 AVLTree::AVLTree(size_t id) 
 {
-    this->setDir(NULL);
-    this->setEsq(NULL);
+    this->setDir(nullptr);
+    this->setEsq(nullptr);
     this->setFBal();
     this->setID(id);
 }
 
-void AVLTree::setID(size_t id) { this->id = id; }
-void AVLTree::setDir(AVLTree* dir) { this->dir = dir; }
-void AVLTree::setEsq(AVLTree* esq) { this->esq = esq; }
+AVLTree::~AVLTree()
+{
+	if (this->getDir())
+		delete this->getDir();
+	if (this->getEsq())
+		delete this->getEsq();
+}
+
+void AVLTree::setID(size_t id)
+{
+    this->id = id;
+}
+
+void AVLTree::setDir(AVLTree* dir)
+{
+    this->dir = dir;
+}
+
+void AVLTree::setEsq(AVLTree* esq)
+{
+    this->esq = esq;
+}
+
 void AVLTree::setFBal()
 {
     this->fbal = this->getAltura(this->dir) - this->getAltura(this->esq);
 }
 
 size_t AVLTree::getAltura(AVLTree* no) {
-    if (no == NULL)
+    if (no == nullptr)
         return 0;
     return 1 + fmax(getAltura(this->getDir()), getAltura(this->getEsq()));
 }
-size_t AVLTree::getID() { return this->id; }
-size_t AVLTree::getFBal() { return this->fbal; }
-AVLTree* AVLTree::getEsq() { return this->esq; }
-AVLTree* AVLTree::getDir() { return this->dir; }
+
+size_t AVLTree::getID()
+{
+    return this->id;
+}
+
+size_t AVLTree::getFBal()
+{
+    return this->fbal;
+}
+
+AVLTree* AVLTree::getEsq()
+{
+    return this->esq;
+}
+
+AVLTree* AVLTree::getDir()
+{
+	  return this->dir;
+}
 
 void AVLTree::rotSEsq(AVLTree* noP) {
     AVLTree* noQ = noP->getDir();
@@ -36,6 +72,7 @@ void AVLTree::rotSEsq(AVLTree* noP) {
     noP->setFBal();
     noQ->setFBal();
 }
+
 void AVLTree::rotSDir(AVLTree* noP) {
     AVLTree* noQ = noP->getEsq();
     noP->setEsq(noQ->getDir());
@@ -44,6 +81,7 @@ void AVLTree::rotSDir(AVLTree* noP) {
     noP->setFBal();
     noQ->setFBal();
 }
+
 void AVLTree::rotDEsq(AVLTree* noP) {
     AVLTree* noQ = noP->getDir();
     AVLTree* noR = noQ->getEsq();
@@ -56,6 +94,7 @@ void AVLTree::rotDEsq(AVLTree* noP) {
     noQ->setFBal();
     noR->setFBal();
 }
+
 void AVLTree::rotDDir(AVLTree* noP) {
     AVLTree* noQ = noP->getEsq();
     AVLTree* noR = noQ->getDir();
@@ -69,31 +108,28 @@ void AVLTree::rotDDir(AVLTree* noP) {
     noR->setFBal();
 }
 
-void AVLTree::insere(AVLTree* no, size_t id) 
+static AVLTree *avlInsere(AVLTree *no, size_t id)
 {
-    if (no == NULL) {
+    if (no == nullptr) {
         no = new AVLTree(id);
-        return;
-    }
-    else {
+        return no;
+    } else {
         if (id > no->getID()) {
-            insere(no->getDir(), id);
-        }
-        else if (id < no->getID()) {
-            insere(no->getEsq(), id);
-        }
-        else //no ja existe na arvore
-            return; 
+            no->setDir(avlInsere(no->getDir(), id));
+        } else if (id < no->getID()) {
+            no->setEsq(avlInsere(no->getEsq(), id));
+        } else //no ja existe na arvore
+            return no; 
     }
     if (no->getFBal() == 2) {
-        if (no->getDir()->getFBal() == -1) {
+        if (no->getDir()->getFBal() == (size_t) -1) {
             no->rotDEsq(no);
         } 
         else {
             no->rotSEsq(no);
         } 
     }
-    else if (no->getFBal() == -2) {
+    else if (no->getFBal() == (size_t) -2) {
         if (no->getEsq()->getFBal() == 1) {
             no->rotDDir(no);
         }
@@ -101,16 +137,19 @@ void AVLTree::insere(AVLTree* no, size_t id)
             no->rotSDir(no);
         }
     }
+		return no;
 }
-bool AVLTree::busca(AVLTree* no, size_t id) {
-    if (no->getID() == id)
-        return true;
-    else if (no == NULL)
-        return false;
-    else if (id < no->getID()) {
-        no->busca(no->getEsq(), id);
-    }
-    else {
-        no->busca(no->getDir(), id);
-    }
+
+void AVLTree::insere(size_t id) 
+{
+	avlInsere(this, id);
+}
+
+bool AVLTree::busca(size_t id)
+{
+	if (this->getID() == id)
+		return true;
+	if (id < this->getID())
+		return (this->getEsq()) ? this->getEsq()->busca(id) : false;
+	return (this->getDir()) ? this->getDir()->busca(id) : false;
 }
