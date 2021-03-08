@@ -5,6 +5,7 @@
 #include "Cidade.hpp"
 #include "Registro.hpp"
 #include "HashTable.hpp"
+#include "Quadtree.hpp"
 
 #define REMOVE_CSV_HEADER(_ifs) \
 	(_ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n'))
@@ -35,9 +36,10 @@ int main(int argc, char *argv[])
 
 		REMOVE_CSV_HEADER(arquivoCoordenadas);
 
+		Quadtree arvore;
 		Cidade cidadeInput;
 		while (arquivoCoordenadas >> cidadeInput)
-			std::cout << cidadeInput << '\n';
+			arvore.insere(&cidadeInput);
 
 		arquivoCoordenadas.close();
 	}
