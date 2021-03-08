@@ -2,12 +2,12 @@
 
 #include <cmath>
 
-AVLTree::AVLTree() 
+AVLTree::AVLTree(size_t id) 
 {
     this->setDir(NULL);
     this->setEsq(NULL);
     this->setFBal();
-    this->id = -1;
+    this->setID(id);
 }
 
 void AVLTree::setID(size_t id) { this->id = id; }
@@ -72,10 +72,7 @@ void AVLTree::rotDDir(AVLTree* noP) {
 void AVLTree::insere(AVLTree* no, size_t id) 
 {
     if (no == NULL) {
-        no->setDir(NULL);
-        no->setEsq(NULL);
-        no->setID(id);
-        no->setFBal();
+        no = new AVLTree(id);
         return;
     }
     else {
