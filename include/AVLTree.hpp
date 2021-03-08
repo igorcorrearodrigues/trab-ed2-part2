@@ -1,7 +1,7 @@
 #ifndef AVLTREE_HPP
 #define AVLTREE_HPP
 
-#include <cmath>
+#include <cstddef>
 
 class AVLTree 
 {
@@ -12,6 +12,7 @@ class AVLTree
         size_t fbal;
     public:
         AVLTree(size_t id);
+        ~AVLTree();
 
         void setID(size_t id);
         void setEsq(AVLTree* esq);
@@ -29,8 +30,8 @@ class AVLTree
         void rotDDir(AVLTree* noP);
         void rotDEsq(AVLTree* noP);
 
-        void insere(AVLTree* no, size_t id);
-        bool busca(AVLTree* no, size_t id);
+        void insere(size_t id);
+        bool busca(size_t id);
 };
 
 #endif // AVLTREE_HPP
