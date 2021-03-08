@@ -11,7 +11,7 @@ class AVLTree
         AVLTree* dir;
         size_t fbal;
     public:
-        AVLTree();
+        AVLTree(size_t id);
 
         void setID(size_t id);
         void setEsq(AVLTree* esq);
