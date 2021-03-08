@@ -5,7 +5,7 @@ class NoB
 { 
     int *chaves;
     size_t m; // Numero maximo de filhos 
-    NoB **filhos;
+    NoB **filhos; // Vetor de ponteiros para os filhos
     size_t n; // Numero de chaves preenchidas
     bool folha;
 
@@ -15,7 +15,8 @@ class NoB
     
 public: 
     NoB(size_t m, bool folha);
-  
+    ~NoB();
+
     size_t getN();
     size_t getM();
 
@@ -26,6 +27,8 @@ public:
   
     void imprimeLinear(); // Imprime as chaves em ordem crescente
     void imprimeEstrutura(); // Imprime a estrutura da arvore
+
+    size_t getAltura();
 
 friend class ArvB; 
 }; 

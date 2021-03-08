@@ -41,3 +41,8 @@ void ArvB::insere(int id)
 
     this->raiz->insere(id); 
 }
+
+size_t ArvB::getAltura()
+{
+    return (this->raiz == NULL) ? 0 : this->raiz->getAltura();
+}

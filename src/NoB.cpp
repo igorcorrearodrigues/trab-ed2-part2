@@ -9,7 +9,15 @@ NoB::NoB(size_t m, bool folha)
     this->n = 0;
     this->chaves = new int[m-1];
     this->filhos = new NoB*[m];
-} 
+}
+
+NoB::~NoB()
+{
+    for (size_t i = 0; i < this->m; i++)
+        delete this->filhos[i];
+    delete [] this->filhos;
+    delete [] this->chaves;
+}
 
 bool NoB::isFolha()
 {
@@ -160,4 +168,18 @@ void NoB::divideFilho(size_t i)
     this->atualizaN(this->n + 1);
     filho->atualizaN(this->m/2-1);
     novoFilho->atualizaN((this->m-1)/2);
+}
+
+size_t NoB::getAltura()
+{
+    if (isFolha())
+        return 1;
+    
+    size_t altura, maior = 0;
+    for (size_t i = 0; i <= this->n; i++) {
+        altura = this->filhos[i]->getAltura();
+        if (maior < altura)
+            maior = altura;
+    }
+    return maior + 1;
 }
