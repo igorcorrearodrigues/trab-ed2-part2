@@ -3,6 +3,7 @@
 #include <limits>
 
 #include "Cidade.hpp"
+#include "Quadtree.hpp"
 
 #define CSV_DIR (argv[1])
 
@@ -29,9 +30,10 @@ int main(int argc, char *argv[])
 	// Remove o header do csv
 	arquivoCordenadas.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
+	Quadtree arvore;
 	Cidade cidadeInput;
 	while (arquivoCordenadas >> cidadeInput)
-		std::cout << cidadeInput << '\n';
+		arvore.insere(&cidadeInput);
 
 	return 0;
 }

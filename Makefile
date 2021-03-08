@@ -4,9 +4,11 @@ INC_DIR=./include
 
 MAIN_SRC=main.cpp             \
 				 ./src/Cidade.cpp     \
+				 ./src/Quadtree.cpp   \
 				 ./src/string_tok.cpp 
 
-MAIN_HPP=$(INC_DIR)/Cidade.hpp \
+MAIN_HPP=$(INC_DIR)/Cidade.hpp   \
+				 $(INC_DIR)/Quadtree.hpp \
 				 $(INC_DIR)/utils.hpp
 
 build: main

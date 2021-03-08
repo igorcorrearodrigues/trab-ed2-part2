@@ -37,6 +37,7 @@ void Quadtree::insere(Cidade* city)
         return;
 
     if (this->c == nullptr){
+				this->c = new Cidade(*city);
         this->c = city;
         this->coordX = city->longitude();
         this->coordY = city->latitude();
