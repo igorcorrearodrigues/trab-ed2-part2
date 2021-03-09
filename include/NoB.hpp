@@ -23,14 +23,14 @@ public:
     bool isFolha();
     bool busca(int id);
     void insere(int id); // Insere chave no nó se nao estiver cheio
-    void divideFilho(size_t i); // Divide nó filho de indice i quando ele estiver cheio
+    
+    // Divide nó filho de indice i quando ele estiver cheio e insere a chave
+    void divideFilhoEInsere(NoB *filho, size_t i, int id); 
   
     void imprimeLinear(); // Imprime as chaves em ordem crescente
     void imprimeEstrutura(); // Imprime a estrutura da arvore
 
     size_t getAltura();
-
-friend class ArvB; 
 }; 
 
 #endif /* NOB_HPP */

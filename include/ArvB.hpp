@@ -7,7 +7,7 @@ class ArvB
 { 
     NoB *raiz;
     size_t m; // Ordem da arvore, representa o maximo de filhos
-public: 
+public:
     ArvB(size_t m)
     {
         this->raiz = NULL;
@@ -20,6 +20,6 @@ public:
     void insere(int id);
 
     size_t getAltura();
-}; 
+};
 
 #endif /* ARVB_HPP */

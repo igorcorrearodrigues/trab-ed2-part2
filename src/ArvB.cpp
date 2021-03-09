@@ -30,16 +30,20 @@ void ArvB::insere(int id)
     std::cout << "Insere " << id << "\n";
 
     if (this->raiz == NULL) {
+        std::cout << "Raiz null" << std::endl;
         this->raiz = new NoB(this->m, true);
-    } else if (this->raiz->n == this->m-1) {
+        this->raiz->insere(id);
+    } else if (this->raiz->getN() == this->m-1) {
+        std::cout << "Raiz cheia" << std::endl;
         // Se raiz estiver cheia, cria nova raiz
         NoB *novaRaiz = new NoB(this->m, false);
-        novaRaiz->filhos[0] = this->raiz; // Raiz antiga vira nó filho da nova raiz 
-        novaRaiz->divideFilho(0); // Redistribui as chaves da raiz antiga 
+        novaRaiz->divideFilhoEInsere(this->raiz, 0, id); // Redistribui as chaves da raiz antiga 
         this->raiz = novaRaiz; // Atualiza raiz
+        std::cout << "Setou nova raiz" << std::endl;
     }
-
-    this->raiz->insere(id); 
+    else {
+        this->raiz->insere(id);
+    }
 }
 
 size_t ArvB::getAltura()

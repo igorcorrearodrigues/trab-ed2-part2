@@ -117,7 +117,7 @@ void NoB::insere(int id)
 
         // Move chaves maiores uma posicao à frente
         for ( ; i >= 0 && this->chaves[i] > id; i--)
-            this->chaves[i+1] = this->chaves[i];
+            this->chaves[i+1] = std::move(this->chaves[i]);
   
         this->chaves[i+1] = id;
         this->atualizaN(this->n + 1);
@@ -128,46 +128,60 @@ void NoB::insere(int id)
 
         // Verifica condicao de insercao
         // Se filho estiver cheio, divide o filho
-        if (filhos[i]->n == this->m-1) {
-            divideFilho(i);
+        if (this->filhos[i]->getN() == this->m-1)
+            divideFilhoEInsere(this->filhos[i], i, id);
 
-            // Encontra posicao de insercao da nova chave
-            if (this->chaves[i] < id) 
-                i += 1;
-        }
-
-        filhos[i]->insere(id); 
+        else
+            filhos[i]->insere(id); 
     }
 } 
 
-void NoB::divideFilho(size_t i)
+void NoB::divideFilhoEInsere(NoB *filho, size_t i, int id)
 {
-    NoB *filho = filhos[i];
+    // Se nó for raiz e filho[0] é nulo, entao atribui o filho 
+    if (this->filhos[0] == NULL)
+        this->filhos[0] = filho;
+    
     NoB *novoFilho = new NoB(filho->getM(), filho->folha);
 
-    // Move as chaves da segunda metade do vetor para o novo filho
-    for (size_t j = 0; j < (this->m-1)/2; j++)
-        novoFilho->chaves[j] = std::move(filho->chaves[j+this->m/2]); 
+    // Guarda maior chave do vetor
+    int maior = filho->chaves[filho->getN()-1];
+    size_t j = filho->getN()-1;
 
+    // Move chaves maiores que a chave id a ser inserida uma posicao à frente
+    for ( ; j > 0 && filho->chaves[j-1] > id; j--)
+        filho->chaves[j] = std::move(filho->chaves[j-1]);
+    
+    // Se o loop nao executou, entao a chave id é a maior das chaves
+    if (j == filho->getN()-1)
+        maior = id;
+    else // Se encontrou a posicao de insercao da chave id, insere
+        filho->chaves[j] = id;
+    
+    // Move as chaves da segunda metade do vetor para o novo filho
+    for (j = 0; j < this->m/2-1; j++)
+        novoFilho->chaves[j] = std::move(filho->chaves[j+(this->m+1)/2]);
+    novoFilho->chaves[j] = maior;
+    
     // Se nao for folha, move os nós filhos tambem
     if (!filho->isFolha())
-        for (size_t j = 0; j <= this->m/2; j++)
-            novoFilho->filhos[j] = filho->filhos[j+this->m/2];
-      
+        for (j = 0; j < this->m/2; j++)
+            novoFilho->filhos[j] = filho->filhos[j+(this->m-1)/2+1];
+    
     // Move os elementos maiores uma posição à frente
-    for (size_t j = this->n; j > i; j--) {
+    for (j = this->n; j > i; j--) {
         this->chaves[j] = std::move(this->chaves[j-1]);
         this->filhos[j+1] = this->filhos[j];
     }
-  
-    // Insere chave na posicao certa
-    this->chaves[i] = std::move(filho->chaves[this->m/2-1]);
+    
+    // Insere chave mediana no nó pai
+    this->chaves[i] = std::move(filho->chaves[(this->m-1)/2]);
     this->filhos[i+1] = novoFilho;
     
     // Atualiza numero de chaves nos nós
     this->atualizaN(this->n + 1);
-    filho->atualizaN(this->m/2-1);
-    novoFilho->atualizaN((this->m-1)/2);
+    filho->atualizaN((this->m-1)/2);
+    novoFilho->atualizaN(this->m/2);
 }
 
 size_t NoB::getAltura()
