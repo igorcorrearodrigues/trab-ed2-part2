@@ -1,20 +1,34 @@
 #ifndef HASH_TABLE_HPP
 #define HASH_TABLE_HPP
 
-#include <unordered_map>
+#define TABLE_M 1431490
 
 #include "Registro.hpp"
 
 class HashTable
 {
 private:
-	std::unordered_map<std::string, Registro> table;
+	struct No
+	{
+		const static size_t STATUS_LIVRE    = 1;
+		const static size_t STATUS_OCUPADO  = 2;
+		const static size_t STATUS_REMOVIDO = 3;
+
+		Registro info;
+		char status;
+
+		No(): info(), status(STATUS_LIVRE)
+		{
+		}
+	};
+
+	No tabela[TABLE_M];
+
+	No *_buscar(std::string codigo, std::string data);
 
 public:
-	size_t tamanho() const;
-
-	void insere(const Registro& r);
-	const Registro& buscar(std::string codigoDaCidade, std::string data);
+	bool insere(const Registro& r);
+	Registro *buscar(std::string codigoDaCidade, std::string data);
 	void remover(std::string codigoDaCidade, std::string data);
 };
 

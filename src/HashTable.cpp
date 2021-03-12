@@ -1,27 +1,86 @@
 #include "HashTable.hpp"
 
-static std::string gerarChave(std::string codigo, std::string data)
+#define _INSERE(no, r) do { no.info = r; no.status == No::STATUS_OCUPADO; } while (0)
+
+static size_t h1(std::string codigo, std::string data)
 {
-	return codigo + '-' + data;
+	std::string s = codigo + data;
+	size_t hash = 0;
+
+	for (auto c : s) {
+		hash = hash * 256 + c;
+	}
+	return hash;
 }
 
-size_t HashTable::tamanho() const
+static size_t h2(std::string codigo, std::string data)
 {
-	return this->table.size();
+	std::string s = codigo + data;
+	size_t hash = 0;
+
+	size_t pos = 0;
+	for (auto c : s) {
+		hash += (c + 31 * pos++);
+	}
+	return hash;
 }
 
-void HashTable::insere(const Registro& r)
+static size_t getPos(std::string codigo, std::string data, size_t i)
 {
-	std::string chave = gerarChave(r.code(), r.date());
-	this->table[chave] = r;
+	if (i == 0)
+		return h1(codigo, data) % TABLE_M;
+	return (h1(codigo, data) + i * h2(codigo, data)) % TABLE_M;
 }
 
-const Registro& HashTable::buscar(std::string codigo, std::string data)
+static size_t getPos(const Registro& r, size_t i)
 {
-	return this->table[gerarChave(codigo, data)];
+	return getPos(r.code(), r.date(), i);
+}
+
+bool HashTable::insere(const Registro& r)
+{
+	for (size_t i = 0; i < TABLE_M; ++i) {
+		size_t pos = getPos(r, i);
+
+		if (this->tabela[pos].status != No::STATUS_OCUPADO) {
+			_INSERE(this->tabela[pos], r);
+			return true;
+		}
+	}
+	return false;
+}
+
+HashTable::No *HashTable::_buscar(std::string codigo, std::string data)
+{
+	for (size_t i = 0; i < TABLE_M; ++i) {
+		No *no = this->tabela + getPos(codigo, data, i);
+
+		if (no->status == No::STATUS_LIVRE)
+			break;
+		if (no->status == No::STATUS_OCUPADO) {
+			const Registro& info = no->info;
+
+			if (info.code() == codigo && info.date() == data)
+				return no;
+		}
+	}
+	return nullptr;
+}
+
+Registro* HashTable::buscar(std::string codigo, std::string data)
+{
+	No *noptr;
+
+	if ((noptr = this->_buscar(codigo, data)) == nullptr)
+		return nullptr;
+	return &(noptr->info);
 }
 
 void HashTable::remover(std::string codigo, std::string data)
 {
-	this->table.erase(gerarChave(codigo, data));
+	No *noptr;
+
+	if ((noptr = this->_buscar(codigo, data)) != nullptr) {
+		noptr->status = No::STATUS_REMOVIDO;
+	}
 }
