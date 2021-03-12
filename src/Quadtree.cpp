@@ -125,35 +125,41 @@ void Quadtree::selecionaProximaRegiao(std::list<Cidade*>* cidadesNaRegiao ,doubl
     }
 }
 
-std::list<Cidade*> Quadtree::buscaRegiao(double lat0, double long0, double lat1, double long1){
+std::list<Cidade*> Quadtree::buscaRegiao(double lat0, double long0, double lat1, double long1)
+{
     //delimitar as regioes dos quadrantes pra facilitar a busca (precisa ?)
     //se long0 <= x <= long1 && lat0 <= y <= lat1, colocar na lista e chamar recursivamente a busca na regiao nova
-    std::list<Cidade*>* cidadesNaRegiao;
-    selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+    std::list<Cidade*> cidadesNaRegiao;
+    selecionaProximaRegiao(&cidadesNaRegiao, lat0, long0, lat1, long1);
     std::cerr << "Lista de cidades na Região: " << std::endl;
-    for(const auto& cidadeAtual : *cidadesNaRegiao)
-        std::cerr << cidadeAtual << std::endl;
-    return *cidadesNaRegiao;
+    for(const auto& cidadeAtual : cidadesNaRegiao)
+        std::cerr << *cidadeAtual << std::endl;
+    return cidadesNaRegiao;
 }
 
-void Quadtree::desenhaMapa(){
-    std::ofstream fp("imagem.ppm");
-	unsigned char lat0 = HEIGHT, long0 = WIDTH, lat1 = HEIGHT, long1 = WIDTH;
+void Quadtree::desenhaMapa()
+{
+    std::ofstream img("imagem.ppm");
+    const unsigned width = 255;
+    const unsigned height = 255; 
+	double lat0 = width, long0 = width;
+    double lat1 = height, long1 = width;
 
 
-	if (!fp.is_open()) {
-		std::cerr << ("Falha ao abrir o arquivo\n");
+	if (!img.is_open()) {
+		std::cerr << "Falha ao abrir o arquivo\n";
+        return;
 	}
 
-	fp << "P3\n"<< WIDTH << HEIGHT << "\n255\n";
+	img << "P3\n"<< width << " " << height << "\n255\n";
 
     std::list<Cidade*> cidadesNaRegiao = this->buscaRegiao(-lat0,-long0,lat1,long1);
     std::list<Ponto> pontosNaRegiao;
 
     for(const auto& cidadeAtual : cidadesNaRegiao){
         pontosNaRegiao.push_back({
-            (int)cidadeAtual->longitude(),
-            (int)cidadeAtual->latitude()
+            (int) cidadeAtual->longitude(),
+            (int) cidadeAtual->latitude()
         });
     }
 
@@ -162,7 +168,7 @@ void Quadtree::desenhaMapa(){
             Ponto pontoAtual({long0,lat0});
             int r = 0;
             int g = 0;
-            if(std::find(pontosNaRegiao.begin(), pontosNaRegiao.end(), pontoAtual) != pontosNaRegiao.end())
+            if (std::find(pontosNaRegiao.begin(), pontosNaRegiao.end(), pontoAtual) != pontosNaRegiao.end())
                 g = 255;
             int b = 0;
 
@@ -170,9 +176,9 @@ void Quadtree::desenhaMapa(){
 			//int g = lat0 % 255;
 			//int b = (long0 * lat0) % 255;
 
-			fp << r << g << b << "\n";
+			img << r << g << b << "\n";
 		}
 	}
     
-	fp.close();
+	img.close();
 }
