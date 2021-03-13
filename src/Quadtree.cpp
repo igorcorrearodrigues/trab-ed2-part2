@@ -131,29 +131,30 @@ std::list<Cidade*> Quadtree::buscaRegiao(double lat0, double long0, double lat1,
     //se long0 <= x <= long1 && lat0 <= y <= lat1, colocar na lista e chamar recursivamente a busca na regiao nova
     std::list<Cidade*> cidadesNaRegiao;
     selecionaProximaRegiao(&cidadesNaRegiao, lat0, long0, lat1, long1);
-    std::cerr << "Lista de cidades na Região: " << std::endl;
-    for(const auto& cidadeAtual : cidadesNaRegiao)
-        std::cerr << *cidadeAtual << std::endl;
+    //std::cerr << "Lista de cidades na Região: " << std::endl;
+    /*for(const auto& cidadeAtual : cidadesNaRegiao)
+        std::cerr << *cidadeAtual << std::endl;*/
     return cidadesNaRegiao;
 }
 
 void Quadtree::desenhaMapa()
 {
     std::ofstream img("imagem.ppm");
-    const unsigned width = 255;
-    const unsigned height = 255; 
-	double lat0 = width, long0 = width;
-    double lat1 = height, long1 = width;
+     
+	double lat0 = -45, long0 = -75;
+    double lat1 = 15, long1 = -30;
 
+    int width = 75; //abs do maior valor de long
+    int height = 45; //abs do maior valor de lat
 
 	if (!img.is_open()) {
 		std::cerr << "Falha ao abrir o arquivo\n";
         return;
 	}
 
-	img << "P3\n"<< width << " " << height << "\n255\n";
+	img << "P3\n"<< 2*width << " " << 2*height << "\n255\n";
 
-    std::list<Cidade*> cidadesNaRegiao = this->buscaRegiao(-lat0,-long0,lat1,long1);
+    std::list<Cidade*> cidadesNaRegiao = this->buscaRegiao(lat0,long0,lat1,long1);
     std::list<Ponto> pontosNaRegiao;
 
     for(const auto& cidadeAtual : cidadesNaRegiao){
@@ -163,22 +164,25 @@ void Quadtree::desenhaMapa()
         });
     }
 
-	for (lat0 = -lat1; lat0 < lat1; ++lat0) {
-		for (long0 = -long1; long0 < long1; ++long0) {
-            Ponto pontoAtual({long0,lat0});
+    /*std::cerr << "Lista de Pontos na Região: " << std::endl;
+    for(const auto& pontoAtual : pontosNaRegiao){
+        std::cerr << pontoAtual.x << " " << pontoAtual.y << std::endl;
+    }*/
+
+	for (int y0 = height; y0 > -height; --y0) {
+		for (int x0 = -width; x0 < width; ++x0) {
+            Ponto pontoAtual({(int) x0, (int) y0});
             int r = 0;
             int g = 0;
-            if (std::find(pontosNaRegiao.begin(), pontosNaRegiao.end(), pontoAtual) != pontosNaRegiao.end())
-                g = 255;
             int b = 0;
-
-			//int r = long0 % 255;
-			//int g = lat0 % 255;
-			//int b = (long0 * lat0) % 255;
-
-			img << r << g << b << "\n";
+            if (std::find(pontosNaRegiao.begin(), pontosNaRegiao.end(), pontoAtual) != pontosNaRegiao.end()){
+                std::cerr << "Achou" << std::endl;
+                r = 43;
+			    g = 240;
+			    b = 125;
+            }
+			img << r << " " << g << " " << b << std::endl;
 		}
 	}
-    
 	img.close();
 }
