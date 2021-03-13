@@ -1,37 +1,40 @@
 #ifndef AVLTREE_HPP
 #define AVLTREE_HPP
 
-#include <cstddef>
+#include "AVLNode.hpp"
+
+#include <ostream>
 
 class AVLTree 
 {
-    private:
-        size_t id;
-        AVLTree* esq;
-        AVLTree* dir;
-        size_t fbal;
-    public:
-        AVLTree(size_t id);
-        ~AVLTree();
+private:
+	AVLNode *root;
 
-        void setID(size_t id);
-        void setEsq(AVLTree* esq);
-        void setDir(AVLTree* dir);
-        void setFBal();
+	static void freeNodes(AVLNode *no);
+	static AVLNode *insere(AVLNode *no, size_t info);
+    static AVLNode *rotSDir(AVLNode *noP);
+    static AVLNode *rotSEsq(AVLNode *noP);
+    static AVLNode *rotDDir(AVLNode *noP);
+    static AVLNode *rotDEsq(AVLNode *noP);
+	static bool busca(const AVLNode *no, size_t info);
+	static long calculaAltura(AVLNode *no);
+	static void calculaFbal(AVLNode *no);
+    static std::ostream& avlNodePrint(std::string prefix, const AVLNode *no,
+                                        std::ostream& out, bool isLeft);
 
-        size_t getAltura(AVLTree* no);
-        size_t getID();
-        size_t getFBal();
-        AVLTree* getDir();
-        AVLTree* getEsq();
+public:
+    AVLTree();
+    ~AVLTree();
 
-        void rotSDir(AVLTree* noP);
-        void rotSEsq(AVLTree* noP);
-        void rotDDir(AVLTree* noP);
-        void rotDEsq(AVLTree* noP);
+    void insere(size_t id);
+    bool busca(size_t id) const;
 
-        void insere(size_t id);
-        bool busca(size_t id);
+    std::ostream& print(std::ostream& stream) const;
 };
+
+inline std::ostream& operator<<(std::ostream& out, const AVLTree& arv)
+{
+    return arv.print(out);
+}
 
 #endif // AVLTREE_HPP

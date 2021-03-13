@@ -1,155 +1,168 @@
 #include "AVLTree.hpp"
 
-#include <cmath>
-
-AVLTree::AVLTree(size_t id) 
-{
-    this->setDir(nullptr);
-    this->setEsq(nullptr);
-    this->setFBal();
-    this->setID(id);
-}
+#include <algorithm>
 
 AVLTree::~AVLTree()
 {
-	if (this->getDir())
-		delete this->getDir();
-	if (this->getEsq())
-		delete this->getEsq();
+    freeNodes(this->root);
 }
 
-void AVLTree::setID(size_t id)
+AVLTree::AVLTree(): root(nullptr)
 {
-    this->id = id;
 }
 
-void AVLTree::setDir(AVLTree* dir)
+void AVLTree::freeNodes(AVLNode *no)
 {
-    this->dir = dir;
-}
-
-void AVLTree::setEsq(AVLTree* esq)
-{
-    this->esq = esq;
-}
-
-void AVLTree::setFBal()
-{
-    this->fbal = this->getAltura(this->dir) - this->getAltura(this->esq);
-}
-
-size_t AVLTree::getAltura(AVLTree* no) {
     if (no == nullptr)
-        return 0;
-    return 1 + fmax(getAltura(this->getDir()), getAltura(this->getEsq()));
+        return;
+    freeNodes(no->esq);
+    freeNodes(no->dir);
+    delete no;
 }
 
-size_t AVLTree::getID()
-{
-    return this->id;
-}
-
-size_t AVLTree::getFBal()
-{
-    return this->fbal;
-}
-
-AVLTree* AVLTree::getEsq()
-{
-    return this->esq;
-}
-
-AVLTree* AVLTree::getDir()
-{
-	  return this->dir;
-}
-
-void AVLTree::rotSEsq(AVLTree* noP) {
-    AVLTree* noQ = noP->getDir();
-    noP->setDir(noQ->getEsq());
-    noQ->setEsq(noP);
-
-    noP->setFBal();
-    noQ->setFBal();
-}
-
-void AVLTree::rotSDir(AVLTree* noP) {
-    AVLTree* noQ = noP->getEsq();
-    noP->setEsq(noQ->getDir());
-    noQ->setDir(noP);
-
-    noP->setFBal();
-    noQ->setFBal();
-}
-
-void AVLTree::rotDEsq(AVLTree* noP) {
-    AVLTree* noQ = noP->getDir();
-    AVLTree* noR = noQ->getEsq();
-    noP->setDir(noR->getEsq());
-    noQ->setEsq(noR->getDir());
-    noR->setEsq(noP);
-    noR->setDir(noQ);
-    
-    noP->setFBal();
-    noQ->setFBal();
-    noR->setFBal();
-}
-
-void AVLTree::rotDDir(AVLTree* noP) {
-    AVLTree* noQ = noP->getEsq();
-    AVLTree* noR = noQ->getDir();
-    noP->setEsq(noR->getDir());
-    noQ->setDir(noR->getEsq());
-    noR->setDir(noP);
-    noR->setEsq(noQ);
-    
-    noP->setFBal();
-    noQ->setFBal();
-    noR->setFBal();
-}
-
-static AVLTree *avlInsere(AVLTree *no, size_t id)
+AVLNode *AVLTree::insere(AVLNode *no, size_t info)
 {
     if (no == nullptr) {
-        no = new AVLTree(id);
+        no = new AVLNode;
+        no->info = info;
         return no;
-    } else {
-        if (id > no->getID()) {
-            no->setDir(avlInsere(no->getDir(), id));
-        } else if (id < no->getID()) {
-            no->setEsq(avlInsere(no->getEsq(), id));
-        } else //no ja existe na arvore
-            return no; 
     }
-    if (no->getFBal() == 2) {
-        if (no->getDir()->getFBal() == (size_t) -1) {
-            no->rotDEsq(no);
-        } 
-        else {
-            no->rotSEsq(no);
-        } 
-    }
-    else if (no->getFBal() == (size_t) -2) {
-        if (no->getEsq()->getFBal() == 1) {
-            no->rotDDir(no);
+
+    if (info > no->info) {
+        no->dir = insere(no->dir, info);
+    } else if (info < no->info) {
+        no->esq = insere(no->esq, info);
+    } else //no ja existe na arvore
+        return no; 
+    
+    calculaFbal(no);
+
+    if (no->fbal == 2) {
+        if (no->dir->fbal == -1) {
+            no = rotDEsq(no);
+        } else
+            no = rotSEsq(no);
+    } else if (no->fbal == -2) {
+        if (no->esq->fbal == 1) {
+            no = rotDDir(no);
+        } else {
+            no = rotSDir(no);
         }
-        else {
-            no->rotSDir(no);
-        }
     }
-		return no;
+	return no;
+}
+
+bool AVLTree::busca(const AVLNode *no, size_t info)
+{
+    if (no == nullptr)
+        return false;
+    if (no->info == info)
+        return true;
+    if (info < no->info)
+        return busca(no->esq, info);
+    return busca(no->dir, info);
+}
+
+long AVLTree::calculaAltura(AVLNode *no)
+{
+    if (no == nullptr)
+        return 0;
+    return 1 + std::max(calculaAltura(no->dir), calculaAltura(no->esq));
+}
+
+void AVLTree::calculaFbal(AVLNode *no)
+{
+    no->fbal = calculaAltura(no->dir) - calculaAltura(no->esq);
+}
+
+AVLNode *AVLTree::rotSEsq(AVLNode *noP)
+{
+    AVLNode *noQ = noP->dir;
+
+    noP->dir = noQ->esq;
+    noQ->esq = noP;
+
+    calculaFbal(noP);
+    calculaFbal(noQ);
+
+    return noQ;
+}
+
+AVLNode *AVLTree::rotSDir(AVLNode *noP)
+{
+    AVLNode *noQ = noP->esq;
+    noP->esq = noQ->dir;
+    noQ->dir = noP;
+    noQ->dir = noP;
+
+    calculaFbal(noP);
+    calculaFbal(noQ);
+
+    return noQ;
+}
+
+AVLNode *AVLTree::rotDEsq(AVLNode *noP)
+{
+    AVLNode *noQ = noP->dir;
+    AVLNode *noR = noQ->esq;
+
+    noP->dir = noR->esq;
+    noQ->esq = noR->dir;
+    noR->esq = noP;
+    noR->dir = noQ;
+
+    calculaFbal(noP);
+    calculaFbal(noQ);
+    calculaFbal(noR);
+
+    return noR;
+}
+
+AVLNode *AVLTree::rotDDir(AVLNode *noP)
+{
+    AVLNode *noQ = noP->esq;
+    AVLNode *noR = noQ->dir;
+
+    noP->esq = noR->dir;
+    noQ->dir = noR->esq;
+    noQ->dir = noP;
+    noR->esq = noQ;
+
+    calculaFbal(noP);
+    calculaFbal(noQ);
+    calculaFbal(noR);
+
+    return noR;
 }
 
 void AVLTree::insere(size_t id) 
 {
-	avlInsere(this, id);
+    this->root = insere(root, id);
 }
 
-bool AVLTree::busca(size_t id)
+std::ostream& AVLTree::avlNodePrint(std::string prefix, const AVLNode *node, std::ostream& out, bool isLeft)
 {
-	if (this->getID() == id)
-		return true;
-	if (id < this->getID())
-		return (this->getEsq()) ? this->getEsq()->busca(id) : false;
-	return (this->getDir()) ? this->getDir()->busca(id) : false;
+    if (node != nullptr) {
+        out << prefix;
+
+        out << (isLeft ? "├──" : "└──" );
+
+        // print the value of the node
+        out << node->info << '\n';
+
+        // enter the next tree level - left and right branch
+        avlNodePrint(prefix + (isLeft ? "│   " : "    "), node->esq, out, true);
+        avlNodePrint(prefix + (isLeft ? "│   " : "    "), node->dir, out, false);
+    }
+    return out;
+}
+
+bool AVLTree::busca(size_t id) const
+{
+    return busca(this->root, id);
+}
+
+std::ostream& AVLTree::print(std::ostream& stream) const
+{
+    return avlNodePrint("", this->root, stream, false);
 }
