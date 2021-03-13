@@ -103,36 +103,14 @@ AVLNode *AVLTree::rotSDir(AVLNode *noP)
 
 AVLNode *AVLTree::rotDEsq(AVLNode *noP)
 {
-    AVLNode *noQ = noP->dir;
-    AVLNode *noR = noQ->esq;
-
-    noP->dir = noR->esq;
-    noQ->esq = noR->dir;
-    noR->esq = noP;
-    noR->dir = noQ;
-
-    calculaFbal(noP);
-    calculaFbal(noQ);
-    calculaFbal(noR);
-
-    return noR;
+    noP->dir = rotSDir(noP->dir);
+    return rotSEsq(noP);
 }
 
 AVLNode *AVLTree::rotDDir(AVLNode *noP)
 {
-    AVLNode *noQ = noP->esq;
-    AVLNode *noR = noQ->dir;
-
-    noP->esq = noR->dir;
-    noQ->dir = noR->esq;
-    noQ->dir = noP;
-    noR->esq = noQ;
-
-    calculaFbal(noP);
-    calculaFbal(noQ);
-    calculaFbal(noR);
-
-    return noR;
+    noP->esq = rotSEsq(noP->esq);    
+    return rotSDir(noP);
 }
 
 void AVLTree::insere(size_t id) 

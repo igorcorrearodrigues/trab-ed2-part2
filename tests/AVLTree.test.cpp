@@ -1,37 +1,66 @@
 #include <iostream>
 #include <cassert>
+#include <vector>
 
 #include "AVLTree.hpp"
 
+void testeArvAVLInsereEmOrdemCrescente();
+void testeArvAVLInsereEmOrdemDecrescente();
+void testeArvAVLInsereEmOrdemAleatoria();
+
 int main(void)
+{
+    testeArvAVLInsereEmOrdemCrescente();
+    testeArvAVLInsereEmOrdemDecrescente();
+    testeArvAVLInsereEmOrdemAleatoria();
+
+    return 0;
+}
+
+void testeTemplate(const std::vector<size_t>& valores)
 {
     AVLTree arv;
 
-    arv.insere(1);
-    arv.insere(2);
-    arv.insere(3);
-    arv.insere(4);
-    arv.insere(5);
-    arv.insere(6);
-    arv.insere(7);
-    arv.insere(8);
-    arv.insere(9);
-    arv.insere(10);
-
-    arv.print(std::cout);
-
-    assert(arv.busca(1));
-    assert(arv.busca(3));
-    assert(arv.busca(2));
-    assert(arv.busca(4));
-    assert(arv.busca(5));
-    assert(arv.busca(6));
-    assert(arv.busca(7));
-    assert(arv.busca(8));
-    assert(arv.busca(9));
-    assert(arv.busca(10));
+    for (const auto& val : valores)
+        arv.insere(val);
+    for (const auto& val : valores)
+        assert(arv.busca(val));
     assert(arv.busca(11) == false);
-    // assert(arv.getID() == 4);
+    arv.print(std::cout);
+}
 
-    return 0;
+void testeArvAVLInsereEmOrdemCrescente()
+{
+    std::vector<size_t> valores;
+
+    for (size_t i = 1; i <= 10; ++i)
+        valores.push_back(i);
+    testeTemplate(valores);
+}
+
+void testeArvAVLInsereEmOrdemDecrescente()
+{
+    std::vector<size_t> valores;
+
+    for (size_t i = 10; i > 0; --i)
+        valores.push_back(i);
+    testeTemplate(valores);
+}
+
+void testeArvAVLInsereEmOrdemAleatoria()
+{
+    std::vector<size_t> valores;
+
+    for (size_t i = 1; i <= 10; ++i)
+        valores.push_back(i);
+
+    std::vector<size_t> aleatorios;
+
+    while (valores.size()) {
+        size_t pos = random() % valores.size();
+        aleatorios.push_back(valores[pos]);
+        valores.erase(valores.begin() + pos);
+    }
+
+    testeTemplate(aleatorios);
 }
