@@ -1,8 +1,7 @@
 #include "AVLTree.hpp"
 
 #include <cmath>
-
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#include <algorithm>
 
 AVLTree::~AVLTree()
 {
@@ -25,7 +24,9 @@ void AVLTree::freeNodes(AVLNode *no)
 AVLNode *AVLTree::insere(AVLNode *no, size_t info)
 {
     if (no == nullptr) {
-        return new AVLNode;
+        no = new AVLNode;
+        no->info = info;
+        return no;
     }
 
     if (info > no->info) {
@@ -35,17 +36,18 @@ AVLNode *AVLTree::insere(AVLNode *no, size_t info)
     } else //no ja existe na arvore
         return no; 
     
+    calculaFbal(no);
 
     if (no->fbal == 2) {
-        if (no->dir->fbal == (size_t) -1) {
-            rotDEsq(no);
+        if (no->dir->fbal == -1) {
+            no = rotDEsq(no);
         } else
-            rotSEsq(no);
-    } else if (no->fbal == (size_t) -2) {
+            no = rotSEsq(no);
+    } else if (no->fbal == -2) {
         if (no->esq->fbal == 1) {
-            rotDDir(no);
+            no = rotDDir(no);
         } else {
-            rotSDir(no);
+            no = rotSDir(no);
         }
     }
 	return no;
@@ -62,11 +64,11 @@ bool AVLTree::busca(const AVLNode *no, size_t info)
     return busca(no->dir, info);
 }
 
-size_t AVLTree::calculaAltura(AVLNode *no)
+long AVLTree::calculaAltura(AVLNode *no)
 {
     if (no == nullptr)
         return 0;
-    return 1 + MAX(calculaAltura(no->dir), calculaAltura(no->esq));
+    return 1 + std::max(calculaAltura(no->dir), calculaAltura(no->esq));
 }
 
 void AVLTree::calculaFbal(AVLNode *no)
@@ -74,18 +76,20 @@ void AVLTree::calculaFbal(AVLNode *no)
     no->fbal = calculaAltura(no->dir) - calculaAltura(no->esq);
 }
 
-void AVLTree::rotSEsq(AVLNode* noP)
+AVLNode *AVLTree::rotSEsq(AVLNode *noP)
 {
-    AVLNode* noQ = noP->dir;
+    AVLNode *noQ = noP->dir;
 
     noP->dir = noQ->esq;
     noQ->esq = noP;
 
     calculaFbal(noP);
     calculaFbal(noQ);
+
+    return noQ;
 }
 
-void AVLTree::rotSDir(AVLNode* noP)
+AVLNode *AVLTree::rotSDir(AVLNode *noP)
 {
     AVLNode *noQ = noP->esq;
     noP->esq = noQ->dir;
@@ -94,12 +98,14 @@ void AVLTree::rotSDir(AVLNode* noP)
 
     calculaFbal(noP);
     calculaFbal(noQ);
+
+    return noQ;
 }
 
-void AVLTree::rotDEsq(AVLNode* noP)
+AVLNode *AVLTree::rotDEsq(AVLNode *noP)
 {
-    AVLNode* noQ = noP->dir;
-    AVLNode* noR = noQ->esq;
+    AVLNode *noQ = noP->dir;
+    AVLNode *noR = noQ->esq;
 
     noP->dir = noR->esq;
     noQ->esq = noR->dir;
@@ -109,12 +115,14 @@ void AVLTree::rotDEsq(AVLNode* noP)
     calculaFbal(noP);
     calculaFbal(noQ);
     calculaFbal(noR);
+
+    return noR;
 }
 
-void AVLTree::rotDDir(AVLNode* noP)
+AVLNode *AVLTree::rotDDir(AVLNode *noP)
 {
-    AVLNode* noQ = noP->esq;
-    AVLNode* noR = noQ->dir;
+    AVLNode *noQ = noP->esq;
+    AVLNode *noR = noQ->dir;
 
     noP->esq = noR->dir;
     noQ->dir = noR->esq;
@@ -124,6 +132,8 @@ void AVLTree::rotDDir(AVLNode* noP)
     calculaFbal(noP);
     calculaFbal(noQ);
     calculaFbal(noR);
+
+    return noR;
 }
 
 void AVLTree::insere(size_t id) 
@@ -131,7 +141,29 @@ void AVLTree::insere(size_t id)
     this->root = insere(root, id);
 }
 
-bool AVLTree::busca(size_t id)
+std::ostream& AVLTree::avlNodePrint(std::string prefix, const AVLNode *node, std::ostream& out, bool isLeft)
+{
+    if (node != nullptr) {
+        out << prefix;
+
+        out << (isLeft ? "├──" : "└──" );
+
+        // print the value of the node
+        out << node->info << '\n';
+
+        // enter the next tree level - left and right branch
+        avlNodePrint(prefix + (isLeft ? "│   " : "    "), node->esq, out, true);
+        avlNodePrint(prefix + (isLeft ? "│   " : "    "), node->dir, out, false);
+    }
+    return out;
+}
+
+bool AVLTree::busca(size_t id) const
 {
     return busca(this->root, id);
+}
+
+std::ostream& AVLTree::print(std::ostream& stream) const
+{
+    return avlNodePrint("", this->root, stream, false);
 }

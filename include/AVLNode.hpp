@@ -8,7 +8,7 @@ struct AVLNode
 	AVLNode *esq;
 	AVLNode *dir;
 	size_t info;
-	size_t fbal; 
+	long fbal; 
 
 	AVLNode():
 		esq(nullptr),
