@@ -21,6 +21,7 @@ public:
     void insere(Cidade* city);
     void selecionaProximaRegiao(std::list<Cidade*>* cidadesNaRegiao ,double lat0, double long0, double lat1, double long1);
     std::list<Cidade*> buscaRegiao(double x0, double y0, double x1, double y1);
+    void desenhaMapaRegional(double lat0, double long0, double lat1, double long1);
     void desenhaMapa();
 };
 
