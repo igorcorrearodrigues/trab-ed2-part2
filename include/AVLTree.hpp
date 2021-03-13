@@ -1,37 +1,35 @@
 #ifndef AVLTREE_HPP
 #define AVLTREE_HPP
 
-#include <cstddef>
+#include "AVLNode.hpp"
 
 class AVLTree 
 {
-    private:
-        size_t id;
-        AVLTree* esq;
-        AVLTree* dir;
-        size_t fbal;
-    public:
-        AVLTree(size_t id);
-        ~AVLTree();
+private:
+	AVLNode *root;
 
-        void setID(size_t id);
-        void setEsq(AVLTree* esq);
-        void setDir(AVLTree* dir);
-        void setFBal();
+	static void freeNodes(AVLNode *no);
+	static AVLNode *insere(AVLNode *no, size_t info);
+	static bool busca(const AVLNode *no, size_t info);
+	static size_t calculaAltura(AVLNode *no);
+	static void calculaFbal(AVLNode *no);
+    static void rotSDir(AVLNode* noP);
+    static void rotSEsq(AVLNode* noP);
+    static void rotDDir(AVLNode* noP);
+    static void rotDEsq(AVLNode* noP);
+public:
+    AVLTree();
+    ~AVLTree();
 
-        size_t getAltura(AVLTree* no);
-        size_t getID();
-        size_t getFBal();
-        AVLTree* getDir();
-        AVLTree* getEsq();
+    void setFBal();
 
-        void rotSDir(AVLTree* noP);
-        void rotSEsq(AVLTree* noP);
-        void rotDDir(AVLTree* noP);
-        void rotDEsq(AVLTree* noP);
+    size_t getAltura(AVLTree* no);
+    size_t getID();
+    size_t getFBal();
 
-        void insere(size_t id);
-        bool busca(size_t id);
+
+    void insere(size_t id);
+    bool busca(size_t id);
 };
 
 #endif // AVLTREE_HPP
