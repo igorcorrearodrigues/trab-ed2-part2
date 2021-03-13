@@ -40,10 +40,10 @@ int main(int argc, char *argv[])
 		Cidade cidadeInput;
 		while (arquivoCoordenadas >> cidadeInput)
 			arvore.insere(&cidadeInput);
-
+		arvore.desenhaMapa();
 		arquivoCoordenadas.close();
 	}
-
+	/*
 	// Leitura do arquivo pre-processado
 	{
 		std::string nomeArquivo = csvDir + "/brazil_covid19_cities_processado.csv";
@@ -61,6 +61,6 @@ int main(int argc, char *argv[])
 		while (arquivoPreProcessado >> r)
 			tabela.insere(r);
 	}
-
+	*/
 	return 0;
 }
