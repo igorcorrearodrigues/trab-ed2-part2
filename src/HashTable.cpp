@@ -1,6 +1,6 @@
 #include "HashTable.hpp"
 
-#define _INSERE(no, r) do { no.info = r; no.status == No::STATUS_OCUPADO; } while (0)
+#define _INSERE(no, r) do { no.info = r; no.status = No::STATUS_OCUPADO; } while (0)
 
 static size_t h1(std::string codigo, std::string data)
 {

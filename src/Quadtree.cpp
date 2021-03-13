@@ -176,7 +176,7 @@ std::list<Cidade*> Quadtree::buscaRegiao(double lat0, double long0, double lat1,
 }
 
 
-void Quadtree::desenhaMapaRegional(double paramlat0, double paramlong0, double paramlat1, double paramlong1)
+std::list<Cidade*> Quadtree::desenhaMapaRegional(double paramlat0, double paramlong0, double paramlat1, double paramlong1)
 {
     std::ofstream img("mapaRegiao.ppm");
      
@@ -191,7 +191,7 @@ void Quadtree::desenhaMapaRegional(double paramlat0, double paramlong0, double p
 
 	if (!img.is_open()) {
 		std::cerr << "Falha ao abrir o arquivo\n";
-        return;
+        return std::list<Cidade*>{};
 	}
 
 	img << "P3\n"<< 2*width << " " << 2*height << "\n255\n";
@@ -227,6 +227,7 @@ void Quadtree::desenhaMapaRegional(double paramlat0, double paramlong0, double p
 		}
 	}
 	img.close();
+    return cidadesNaRegiao;
 }
 
 
