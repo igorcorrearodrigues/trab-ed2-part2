@@ -3,9 +3,6 @@
 #include <fstream>
 #include <algorithm>
 
-#define WIDTH 150
-#define HEIGHT 150
-
 struct Ponto{
     int x, y;
     bool operator==(const Ponto& p){
@@ -95,34 +92,75 @@ void Quadtree::selecionaProximaRegiao(std::list<Cidade*>* cidadesNaRegiao ,doubl
         std::cerr << "quadSW: " << *this->quadSW->c << std::endl;
         std::cerr << "quadSE: " << *this->quadSE->c << std::endl;
     }*/
+
+    bool regiaoDistante = true;
+
     if (this->quadNE != nullptr){
         if(this->quadNE->coordY < lat1 && this->quadNE->coordY > lat0 &&
            this->quadNE->coordX < long1 && this->quadNE->coordX > long0){
-              cidadesNaRegiao->push_back(this->quadNE->c);
-              this->quadNE->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+                cidadesNaRegiao->push_back(this->quadNE->c);
+                this->quadNE->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+                regiaoDistante = false;
         }
     }
     if (this->quadNW != nullptr){
         if(this->quadNW->coordY < lat1 && this->quadNW->coordY > lat0 &&
            this->quadNW->coordX < long1 && this->quadNW->coordX > long0){
-               cidadesNaRegiao->push_back(this->quadNW->c);
-               this->quadNW->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+                cidadesNaRegiao->push_back(this->quadNW->c);
+                this->quadNW->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+                regiaoDistante = false;
         }
     }
     if (this->quadSW != nullptr){
         if(this->quadSW->coordY < lat1 && this->quadSW->coordY > lat0 &&
            this->quadSW->coordX < long1 && this->quadSW->coordX > long0){
-               cidadesNaRegiao->push_back(this->quadSW->c);
-               this->quadSW->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+                cidadesNaRegiao->push_back(this->quadSW->c);
+                this->quadSW->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+                regiaoDistante = false;
         }
     }
     if (this->quadSE != nullptr){
         if(this->quadSE->coordY < lat1 && this->quadSE->coordY > lat0 &&
            this->quadSE->coordX < long1 && this->quadSE->coordX > long0){
-               cidadesNaRegiao->push_back(this->quadSE->c);
-               this->quadSE->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+                cidadesNaRegiao->push_back(this->quadSE->c);
+                this->quadSE->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1);
+                regiaoDistante = false;
         }
     }
+    if(regiaoDistante){
+        //std::cerr << "PASSOU 1" << std::endl;
+        if(long0 >= this->coordX){
+            //std::cerr << "PASSOU 2" << std::endl;
+            if(lat0 >= this->coordY){
+                //std::cerr << "PASSOU NE" << std::endl;
+                if (this->quadNE != nullptr){
+                    this->quadNE->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1); //NE
+                }
+            }
+            else{
+                //std::cerr << "PASSOU SE" << std::endl;
+                if (this->quadSE != nullptr){
+                    this->quadSE->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1); //SE
+                }
+            }
+        }
+        else{
+            //std::cerr << "PASSOU 3" << std::endl;
+            if(lat0 >= this->coordY){
+                //std::cerr << "PASSOU NW" << std::endl;
+                if (this->quadNW != nullptr){
+                    this->quadNW->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1); //NW
+                }
+            }
+            else{
+                //std::cerr << "PASSOU SW" << std::endl;
+                if (this->quadSW != nullptr){
+                    this->quadSW->selecionaProximaRegiao(cidadesNaRegiao, lat0, long0, lat1, long1); //SW
+                }
+            }
+        }
+    }
+
 }
 
 std::list<Cidade*> Quadtree::buscaRegiao(double lat0, double long0, double lat1, double long1)
@@ -131,18 +169,73 @@ std::list<Cidade*> Quadtree::buscaRegiao(double lat0, double long0, double lat1,
     //se long0 <= x <= long1 && lat0 <= y <= lat1, colocar na lista e chamar recursivamente a busca na regiao nova
     std::list<Cidade*> cidadesNaRegiao;
     selecionaProximaRegiao(&cidadesNaRegiao, lat0, long0, lat1, long1);
-    //std::cerr << "Lista de cidades na Região: " << std::endl;
-    /*for(const auto& cidadeAtual : cidadesNaRegiao)
+    /*std::cerr << "Lista de cidades na Região: " << std::endl;
+    for(const auto& cidadeAtual : cidadesNaRegiao)
         std::cerr << *cidadeAtual << std::endl;*/
     return cidadesNaRegiao;
 }
 
+
+void Quadtree::desenhaMapaRegional(double paramlat0, double paramlong0, double paramlat1, double paramlong1)
+{
+    std::ofstream img("mapaRegiao.ppm");
+     
+	double lat0 = paramlat0, long0 = paramlong0;
+    double lat1 = paramlat1, long1 = paramlong1;
+
+    //funçao q garante que lat 1 > lat 0 && long1 > long1
+    // na chamada mesmo, senão vai dar ruim depois
+
+    int width = (int) std::max(abs(long0),abs(long1)); //abs do maior valor de long
+    int height =(int) std::max(abs(lat0),abs(lat1)); //abs do maior valor de lat
+
+	if (!img.is_open()) {
+		std::cerr << "Falha ao abrir o arquivo\n";
+        return;
+	}
+
+	img << "P3\n"<< 2*width << " " << 2*height << "\n255\n";
+
+    std::list<Cidade*> cidadesNaRegiao = this->buscaRegiao(lat0,long0,lat1,long1);
+    std::list<Ponto> pontosNaRegiao;
+
+    for(const auto& cidadeAtual : cidadesNaRegiao){
+        pontosNaRegiao.push_back({
+            (int) cidadeAtual->longitude(),
+            (int) cidadeAtual->latitude()
+        });
+    }
+
+    /*std::cerr << "Lista de Pontos na Região: " << std::endl;
+    for(const auto& pontoAtual : pontosNaRegiao){
+        std::cerr << pontoAtual.x << " " << pontoAtual.y << std::endl;
+    }*/
+
+	for (int y0 = height; y0 > -height; --y0) {
+		for (int x0 = -width; x0 < width; ++x0) {
+            Ponto pontoAtual({(int) x0, (int) y0});
+            int r = 0;
+            int g = 0;
+            int b = 0;
+            if (std::find(pontosNaRegiao.begin(), pontosNaRegiao.end(), pontoAtual) != pontosNaRegiao.end()){
+                //std::cerr << "Achou" << std::endl;
+                r = 43;
+			    g = 240;
+			    b = 125;
+            }
+			img << r << " " << g << " " << b << std::endl;
+		}
+	}
+	img.close();
+}
+
+
 void Quadtree::desenhaMapa()
 {
-    std::ofstream img("imagem.ppm");
+    std::ofstream img("mapaBrasil.ppm");
      
-	double lat0 = -45, long0 = -75;
-    double lat1 = 15, long1 = -30;
+	int lat0 = -45, long0 = -75;
+    int lat1 = 15, long1 = -30;
 
     int width = 75; //abs do maior valor de long
     int height = 45; //abs do maior valor de lat
@@ -176,7 +269,7 @@ void Quadtree::desenhaMapa()
             int g = 0;
             int b = 0;
             if (std::find(pontosNaRegiao.begin(), pontosNaRegiao.end(), pontoAtual) != pontosNaRegiao.end()){
-                std::cerr << "Achou" << std::endl;
+                //std::cerr << "Achou" << std::endl;
                 r = 43;
 			    g = 240;
 			    b = 125;
