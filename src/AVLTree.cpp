@@ -1,4 +1,4 @@
-#include "../include/AVLTree.hpp"
+#include "AVLTree.hpp"
 
 #include <cmath>
 
