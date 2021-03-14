@@ -1,5 +1,11 @@
 #include "HashTable.hpp"
 
+#include <algorithm>
+
+No::No(): info(), status(STATUS_LIVRE)
+{
+}
+
 #define _INSERE(no, r) do { no.info = r; no.status = No::STATUS_OCUPADO; } while (0)
 
 static size_t h1(std::string codigo, std::string data)
@@ -37,6 +43,30 @@ static size_t getPos(const Registro& r, size_t i)
 	return getPos(r.code(), r.date(), i);
 }
 
+static void insereOrdenado(std::vector<size_t>& vec, size_t valor)
+{
+	std::vector<size_t>::iterator it = std::lower_bound(vec.begin(), vec.end(), valor);
+	vec.insert(it, valor);
+}
+
+static void removeDoVector(std::vector<size_t>& vec, size_t valor)
+{
+	std::vector<size_t>::iterator it = std::find(vec.begin(), vec.end(), valor);
+	if (it != vec.end()) {
+		vec.erase(it);
+	}
+}
+
+HashTable::HashTable()
+{
+	this->tabela = new No[TABLE_M];
+}
+
+HashTable::~HashTable()
+{
+	delete[] this->tabela;
+}
+
 bool HashTable::insere(const Registro& r)
 {
 	for (size_t i = 0; i < TABLE_M; ++i) {
@@ -44,13 +74,14 @@ bool HashTable::insere(const Registro& r)
 
 		if (this->tabela[pos].status != No::STATUS_OCUPADO) {
 			_INSERE(this->tabela[pos], r);
+			insereOrdenado(this->hashes, pos);
 			return true;
 		}
 	}
 	return false;
 }
 
-HashTable::No *HashTable::_buscar(std::string codigo, std::string data)
+No *HashTable::_buscar(std::string codigo, std::string data)
 {
 	for (size_t i = 0; i < TABLE_M; ++i) {
 		No *no = this->tabela + getPos(codigo, data, i);
@@ -82,5 +113,15 @@ void HashTable::remover(std::string codigo, std::string data)
 
 	if ((noptr = this->_buscar(codigo, data)) != nullptr) {
 		noptr->status = No::STATUS_REMOVIDO;
+		removeDoVector(this->hashes, (noptr - this->tabela));
 	}
+}
+
+std::vector<size_t> HashTable::getRandomHashes(size_t n)
+{
+	std::vector<size_t> aleatorios(this->hashes);
+	
+	std::random_shuffle(aleatorios.begin(), aleatorios.end());
+	aleatorios.resize(n);
+	return aleatorios;
 }
