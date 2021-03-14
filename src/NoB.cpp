@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../include/NoB.hpp"
+#include "NoB.hpp"
 
 NoB::NoB(size_t m, bool folha) 
 {

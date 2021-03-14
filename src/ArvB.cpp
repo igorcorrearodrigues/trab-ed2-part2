@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../include/ArvB.hpp"
+#include "ArvB.hpp"
 
 void ArvB::imprimeLinear()
 {
