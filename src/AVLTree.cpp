@@ -1,6 +1,7 @@
 #include "AVLTree.hpp"
 
 #include <algorithm>
+#include <iostream>
 
 AVLTree::~AVLTree()
 {
@@ -52,15 +53,15 @@ AVLNode *AVLTree::insere(AVLNode *no, size_t info)
 	return no;
 }
 
-bool AVLTree::busca(const AVLNode *no, size_t info)
+bool AVLTree::busca(const AVLNode *no, size_t info, size_t& comps)
 {
     if (no == nullptr)
         return false;
-    if (no->info == info)
+    if ((++comps) && no->info == info)
         return true;
-    if (info < no->info)
-        return busca(no->esq, info);
-    return busca(no->dir, info);
+    if ((++comps) && info < no->info)
+        return busca(no->esq, info, comps);
+    return busca(no->dir, info, comps);
 }
 
 long AVLTree::calculaAltura(AVLNode *no)
@@ -115,7 +116,12 @@ AVLNode *AVLTree::rotDDir(AVLNode *noP)
 
 void AVLTree::insere(size_t id) 
 {
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
     this->root = insere(root, id);
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    this->_tempoUltimaInsercao  = std::chrono::duration_cast<std::chrono::microseconds>(begin - end);
 }
 
 std::ostream& AVLTree::avlNodePrint(std::string prefix, const AVLNode *node, std::ostream& out, bool isLeft)
@@ -135,9 +141,28 @@ std::ostream& AVLTree::avlNodePrint(std::string prefix, const AVLNode *node, std
     return out;
 }
 
-bool AVLTree::busca(size_t id) const
+bool AVLTree::busca(size_t id)
 {
-    return busca(this->root, id);
+    this->_comparacoesUltimaBusca = 0;
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+    bool result = busca(this->root, id, this->_comparacoesUltimaBusca);
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+    this->_tempoUltimaBusca  = std::chrono::duration_cast<std::chrono::microseconds>(begin - end);
+
+    return result;
+}
+
+const std::chrono::microseconds& AVLTree::tempoUltimaBusca()
+{
+    return this->_tempoUltimaBusca;
+}
+
+const std::chrono::microseconds& AVLTree::tempoUltimaInsercao()
+{
+    return this->_tempoUltimaInsercao;
 }
 
 std::ostream& AVLTree::print(std::ostream& stream) const

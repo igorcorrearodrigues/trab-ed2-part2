@@ -4,11 +4,15 @@
 #include "AVLNode.hpp"
 
 #include <ostream>
+#include <chrono>
 
 class AVLTree 
 {
 private:
 	AVLNode *root;
+    size_t _comparacoesUltimaBusca;
+    std::chrono::microseconds _tempoUltimaBusca;
+    std::chrono::microseconds _tempoUltimaInsercao;
 
 	static void freeNodes(AVLNode *no);
 	static AVLNode *insere(AVLNode *no, size_t info);
@@ -16,7 +20,7 @@ private:
     static AVLNode *rotSEsq(AVLNode *noP);
     static AVLNode *rotDDir(AVLNode *noP);
     static AVLNode *rotDEsq(AVLNode *noP);
-	static bool busca(const AVLNode *no, size_t info);
+	static bool busca(const AVLNode *no, size_t info, size_t& comps);
 	static long calculaAltura(AVLNode *no);
 	static void calculaFbal(AVLNode *no);
     static std::ostream& avlNodePrint(std::string prefix, const AVLNode *no,
@@ -27,7 +31,11 @@ public:
     ~AVLTree();
 
     void insere(size_t id);
-    bool busca(size_t id) const;
+    bool busca(size_t id);
+
+    size_t comparacoesUltimaBusca();
+    const std::chrono::microseconds& tempoUltimaBusca();
+    const std::chrono::microseconds& tempoUltimaInsercao();
 
     std::ostream& print(std::ostream& stream) const;
 };
