@@ -77,26 +77,26 @@ void NoB::imprimeEstrutura()
     }
 }
 
-size_t NoB::procuraPosicao(int id)
+size_t NoB::procuraPosicao(int id, size_t& comps)
 {
     size_t i = 0;
-    while (i < this->n && id > this->chaves[i])
+    while (i < this->n && (++comps) && id > this->chaves[i])
         i++;
     
     return i;
 }
 
-bool NoB::busca(int id) 
+bool NoB::busca(int id, size_t& comps) 
 {
     // Procura a posicao da chave
-    size_t i = procuraPosicao(id);
+    size_t i = procuraPosicao(id, comps);
 
-    if (this->chaves[i] == id)
+    if ((++comps) && this->chaves[i] == id)
         return true;
     else if (isFolha())
         return false;
 
-    return filhos[i]->busca(id);
+    return filhos[i]->busca(id, comps);
 }
 
 size_t NoB::procuraFilho(int id)

@@ -7,6 +7,8 @@ class ArvB
 { 
     NoB *raiz;
     size_t m; // Ordem da arvore, representa o maximo de filhos
+    size_t comparacoes;
+
 public:
     ArvB(size_t m)
     {
@@ -18,6 +20,8 @@ public:
     void imprimeEstrutura();
     bool busca(int id);
     void insere(int id);
+
+    size_t getComparacoes();
 
     size_t getAltura();
 };

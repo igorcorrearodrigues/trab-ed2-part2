@@ -22,8 +22,14 @@ void ArvB::imprimeEstrutura()
 
 bool ArvB::busca(int id) 
 {
-    return (this->raiz == NULL) ? false : this->raiz->busca(id); 
+    this->comparacoes = 0;
+    return (this->raiz == NULL) ? false : this->raiz->busca(id, comparacoes); 
 } 
+
+size_t ArvB::getComparacoes()
+{
+    return this->comparacoes;
+}
 
 void ArvB::insere(int id) 
 {

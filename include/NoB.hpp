@@ -10,7 +10,7 @@ class NoB
     bool folha;
 
     void atualizaN(size_t n);
-    size_t procuraPosicao(int id); // Procura posicao da chave
+    size_t procuraPosicao(int id, size_t& comps); // Procura posicao da chave
     size_t procuraFilho(int id); // Procura posicao do nó filho
     
 public: 
@@ -21,7 +21,7 @@ public:
     size_t getM();
 
     bool isFolha();
-    bool busca(int id);
+    bool busca(int id, size_t& comps);
     void insere(int id); // Insere chave no nó se nao estiver cheio
     
     // Divide nó filho de indice i quando ele estiver cheio e insere a chave
