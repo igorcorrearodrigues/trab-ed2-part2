@@ -45,7 +45,6 @@ void insercaoNasArvores(HashTable& tabela, size_t n)
 	std::cout << "total de casos B20: " << arvB20.totalCasosCidade("120001") << std::endl;
 	insereNChavesDaTabela(arvB200, tabela, n);
 	std::cout << "total de casos B200: " << arvB200.totalCasosCidade("120001") << std::endl;
-
 }
 
 int main(int argc, char *argv[])
@@ -100,10 +99,10 @@ int main(int argc, char *argv[])
 	arquivoPreProcessado.close();
 
 	insercaoNasArvores(tabela, 10000);
-	//insercaoNasArvores(tabela, 50000);
-	//insercaoNasArvores(tabela, 100000);
-	//insercaoNasArvores(tabela, 500000);
-	//insercaoNasArvores(tabela, 1000000);
+	insercaoNasArvores(tabela, 50000);
+	insercaoNasArvores(tabela, 100000);
+	insercaoNasArvores(tabela, 500000);
+	insercaoNasArvores(tabela, 1000000);
 
 	return 0;
 }

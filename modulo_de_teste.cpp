@@ -209,6 +209,7 @@ void insereNaQuadtree(Quadtree& q, std::ostream& out, size_t n)
 {
     std::vector<Cidade> cidades = getNCidades(n);
 
+    out << __FUNCTION__ << '\n';
     for (auto& cidade : cidades) {
         out << cidade << '\n';
         q.insere(new Cidade(std::move(cidade)));
@@ -219,6 +220,7 @@ void insereNaTabelaHash(HashTable& t, std::ostream& out, size_t n)
 {
     std::vector<Registro> registros = getNRegistros(n);
 
+    out << __FUNCTION__ << '\n';
     for (auto& r : registros) {
         out << r << '\n';
         t.insere(r);
@@ -227,18 +229,23 @@ void insereNaTabelaHash(HashTable& t, std::ostream& out, size_t n)
 
 void insereNaArvoreAvl(AVLTree& arv, std::ostream& out, size_t n)
 {
+    std::vector<size_t> hashes = arv.getHashTable()->getRandomHashes(n);
+    
     out << __FUNCTION__ << '\n';
-    for (size_t i = 0; i < n; ++i) {
-        out << i << '\n';
-        arv.insere(i);
+    for (size_t val : hashes) {
+        out << "Inserindo: " << val << '\n';
+        arv.insere(val);
     }
+    out << arv << '\n';
 }
 
 void insereNaArvoreB(ArvB& arv, std::ostream& out, size_t n)
 {
+    std::vector<size_t> hashes = arv.getHashTable()->getRandomHashes(n);
+
     out << __FUNCTION__ << '\n';
-    for (size_t i = 0; i < n; ++i) {
-        out << i << '\n';
-        arv.insere(i);
+    for (size_t val : hashes) {
+        out << "Inserindo: " << val << '\n';
+        arv.insere(val);
     }
 }

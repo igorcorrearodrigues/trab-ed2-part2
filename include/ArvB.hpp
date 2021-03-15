@@ -27,6 +27,7 @@ public:
 
     size_t totalCasosCidade(std::string codigo);
     int compMaiorQueID(size_t info, size_t id);
+    HashTable *getHashTable();
 
     size_t comparacoesUltimaBusca();
     const std::chrono::microseconds& tempoUltimaBusca();

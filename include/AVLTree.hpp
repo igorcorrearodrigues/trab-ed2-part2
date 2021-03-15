@@ -40,6 +40,7 @@ public:
     bool busca(size_t id);
     int totalCasosCidade(std::string codigo);
 
+    HashTable *getHashTable();
     size_t comparacoesUltimaBusca();
     const std::chrono::microseconds& tempoUltimaBusca();
     const std::chrono::microseconds& tempoUltimaInsercao();

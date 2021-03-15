@@ -73,6 +73,11 @@ int ArvB::compMaiorQueID(size_t info, size_t id) {
     return 0;
 }
 
+HashTable *ArvB::getHashTable()
+{
+    return this->tabela;
+}
+
 void ArvB::insere(int id) 
 { 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();

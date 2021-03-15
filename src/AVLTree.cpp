@@ -40,6 +40,11 @@ int AVLTree::totalCasosCidade(std::string codigo) {
     return this->totalCasosCidade(this->root, codigo);
 }
 
+HashTable *AVLTree::getHashTable()
+{
+    return this->tabela;
+}
+
 int AVLTree::totalCasosCidade(AVLNode *no, std::string codigo) {
     if (no == nullptr) {
         return 0;
