@@ -5,13 +5,15 @@
 #include <ostream>
 #include <istream>
 
+#include "CodigoDaCidade.hpp"
+
 class Registro
 {
 private:
 	std::string _date;
 	std::string _state;
 	std::string _city;
-	std::string _code;
+	CodigoDaCidade _code;
 	int _cases;
 	int _deaths;
 		

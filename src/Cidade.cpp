@@ -16,7 +16,7 @@ double Cidade::longitude() const
 	return this->_longitude;
 }
 
-int Cidade::codigo() const
+const std::string& Cidade::codigo() const
 {
 	return this->_codigo;
 }
@@ -46,7 +46,7 @@ void Cidade::setLongitude(double longitude)
 	this->_longitude = longitude;
 }
 
-void Cidade::setCodigo(int codigo)
+void Cidade::setCodigo(const std::string& codigo)
 {
 	this->_codigo = codigo;
 }
@@ -78,7 +78,7 @@ std::istream& Cidade::read(std::istream& in)
 	if (std::getline(in, line)) {
 		// state_code,city_code,city_name,lat,long,capital
 		this->setCodigoDoEstado(std::stoi(string_tok(line, ',', &pos)));
-		this->setCodigo(std::stoi(string_tok(line, ',', &pos)));
+		this->setCodigo(string_tok(line, ',', &pos));
 		this->setNome(string_tok(line, ',', &pos));
 		this->setLatitude(std::stod(string_tok(line, ',', &pos)));
 		this->setLongitude(std::stod(string_tok(line, ',', &pos)));

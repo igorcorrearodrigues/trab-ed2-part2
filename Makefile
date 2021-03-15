@@ -5,6 +5,7 @@ SRC_DIR=./src
 
 MAIN_SRC=main.cpp \
 				 $(SRC_DIR)/Cidade.cpp \
+				 $(SRC_DIR)/CodigoDaCidade.cpp \
 				 $(SRC_DIR)/ArvB.cpp \
 				 $(SRC_DIR)/NoB.cpp \
 				 $(SRC_DIR)/AVLTree.cpp \
@@ -15,6 +16,7 @@ MAIN_SRC=main.cpp \
 
 MAIN_HPP=$(INC_DIR)/Cidade.hpp    \
 				 $(INC_DIR)/Registro.hpp  \
+				 $(INC_DIR)/CodigoDaCidade.hpp  \
 				 $(INC_DIR)/ArvB.hpp  \
 				 $(INC_DIR)/AVLTree.hpp  \
 				 $(INC_DIR)/NoB.hpp  \

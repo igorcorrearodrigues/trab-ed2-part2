@@ -40,11 +40,11 @@ void insercaoNasArvores(HashTable& tabela, size_t n)
 	ArvB arvB200(200, &tabela);
 
 	insereNChavesDaTabela(arvoreAvl, tabela, n);
-	std::cout << "total de casos AVL: " << arvoreAvl.totalCasosCidade("120001.0") << std::endl;
+	std::cout << "total de casos AVL: " << arvoreAvl.totalCasosCidade("120001") << std::endl;
 	insereNChavesDaTabela(arvB20, tabela, n);
-	std::cout << "total de casos B20: " << arvB20.totalCasosCidade("120001.0") << std::endl;
+	std::cout << "total de casos B20: " << arvB20.totalCasosCidade("120001") << std::endl;
 	insereNChavesDaTabela(arvB200, tabela, n);
-	std::cout << "total de casos B200: " << arvB200.totalCasosCidade("120001.0") << std::endl;
+	std::cout << "total de casos B200: " << arvB200.totalCasosCidade("120001") << std::endl;
 
 }
 
