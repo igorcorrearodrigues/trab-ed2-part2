@@ -5,6 +5,11 @@
 
 class CodigoDaCidade
 {
+public:
+    static const size_t CODE_LENGTH = 6;
+
+    static bool validate(const std::string& code);
+
 private:
     std::string _code;
 

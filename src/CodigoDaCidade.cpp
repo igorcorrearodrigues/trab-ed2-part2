@@ -1,5 +1,7 @@
 #include "CodigoDaCidade.hpp"
 
+#include <cctype>
+
 CodigoDaCidade::CodigoDaCidade(): _code("")
 {
 }
@@ -7,6 +9,17 @@ CodigoDaCidade::CodigoDaCidade(): _code("")
 CodigoDaCidade::CodigoDaCidade(const std::string& code):
     _code(code)
 {
+}
+
+bool CodigoDaCidade::validate(const std::string& code)
+{
+    if (code.length() != CodigoDaCidade::CODE_LENGTH)
+        return false;
+    
+    for (auto c : code)
+        if (!isdigit(c))
+            return false;
+    return true;
 }
 
 void CodigoDaCidade::set(const std::string& code)
