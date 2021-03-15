@@ -17,6 +17,7 @@ private:
     size_t _comparacoesUltimaBusca;
     std::chrono::microseconds _tempoUltimaBusca;
     std::chrono::microseconds _tempoUltimaInsercao;
+    size_t _comparacoesBuscaTotalCasos;
 
 	static void freeNodes(AVLNode *no);
 	AVLNode *insere(AVLNode *no, size_t info);
@@ -28,7 +29,7 @@ private:
 	static long calculaAltura(AVLNode *no);
 	static void calculaFbal(AVLNode *no);
     int compMaiorQueID(size_t info, size_t id);
-    int totalCasosCidade(AVLNode *no, std::string codigo);
+    int totalCasosCidade(AVLNode *no, std::string codigo, size_t& comps);
     static std::ostream& avlNodePrint(std::string prefix, const AVLNode *no,
                                         std::ostream& out, bool isLeft);
 
@@ -42,6 +43,7 @@ public:
 
     HashTable *getHashTable();
     size_t comparacoesUltimaBusca();
+    size_t comparacoesUltimaTotalCasos();
     const std::chrono::microseconds& tempoUltimaBusca();
     const std::chrono::microseconds& tempoUltimaInsercao();
 

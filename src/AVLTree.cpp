@@ -37,7 +37,8 @@ int AVLTree::compMaiorQueID(size_t info, size_t id) {
 }
 
 int AVLTree::totalCasosCidade(std::string codigo) {
-    return this->totalCasosCidade(this->root, codigo);
+    this->_comparacoesBuscaTotalCasos = 0;
+    return this->totalCasosCidade(this->root, codigo, this->_comparacoesBuscaTotalCasos);
 }
 
 HashTable *AVLTree::getHashTable()
@@ -45,16 +46,17 @@ HashTable *AVLTree::getHashTable()
     return this->tabela;
 }
 
-int AVLTree::totalCasosCidade(AVLNode *no, std::string codigo) {
+int AVLTree::totalCasosCidade(AVLNode *no, std::string codigo, size_t& comps) {
+    ++comps;
     if (no == nullptr) {
         return 0;
     }
     Registro *cidade = this->tabela->get(no->info);
-    if (cidade->code() > codigo)
-        return this->totalCasosCidade(no->esq, codigo);
-    if (cidade->code() < codigo)
-        return this->totalCasosCidade(no->dir, codigo);
-    return cidade->cases() + this->totalCasosCidade(no->dir, codigo) + this->totalCasosCidade(no->esq, codigo);
+    if (cidade->code() > codigo && ++comps)
+        return this->totalCasosCidade(no->esq, codigo, comps);
+    if (cidade->code() < codigo && ++comps)
+        return this->totalCasosCidade(no->dir, codigo, comps);
+    return cidade->cases() + this->totalCasosCidade(no->dir, codigo, comps) + this->totalCasosCidade(no->esq, codigo, comps);
 }
 
 AVLNode *AVLTree::insere(AVLNode *no, size_t info)
@@ -191,6 +193,16 @@ bool AVLTree::busca(size_t id)
     this->_tempoUltimaBusca  = std::chrono::duration_cast<std::chrono::microseconds>(begin - end);
 
     return result;
+}
+
+size_t AVLTree::comparacoesUltimaBusca() 
+{
+    return this->_comparacoesUltimaBusca;
+}
+
+size_t AVLTree::comparacoesUltimaTotalCasos()
+{
+    return this->_comparacoesBuscaTotalCasos;
 }
 
 const std::chrono::microseconds& AVLTree::tempoUltimaBusca()
