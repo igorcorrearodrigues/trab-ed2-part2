@@ -2,13 +2,14 @@
 
 #include "NoB.hpp"
 
-NoB::NoB(size_t m, bool folha) 
+NoB::NoB(size_t m, bool folha, HashTable *tabela) 
 {
     this->m = m;
     this->folha = folha;
     this->n = 0;
     this->chaves = new int[m-1];
     this->filhos = new NoB*[m];
+    this->tabela = tabela;
 }
 
 NoB::~NoB()
@@ -80,18 +81,31 @@ void NoB::imprimeEstrutura()
 size_t NoB::procuraPosicao(int id, size_t& comps)
 {
     size_t i = 0;
-    while (i < this->n && (++comps) && id > this->chaves[i])
+    while (i < this->n && (++comps) && this->compMaiorQueID(id, this->chaves[i]) > 0)
         i++;
     
     return i;
+}
+
+size_t NoB::totalCasosCidade(std::string codigo) {
+    size_t totalCasos = 0;
+    for (int i = 0; i < this->n; i++) {
+        Registro *cidade = this->tabela->get(this->chaves[i]);
+        if (!isFolha())
+            totalCasos += filhos[i]->totalCasosCidade(codigo);
+        if (cidade->code() == codigo)
+            totalCasos += cidade->cases();
+    }
+    return totalCasos;
 }
 
 bool NoB::busca(int id, size_t& comps) 
 {
     // Procura a posicao da chave
     size_t i = procuraPosicao(id, comps);
-
-    if ((++comps) && this->chaves[i] == id)
+    int cR = this->compMaiorQueID(id, this->chaves[i]); 
+    
+    if ((++comps) && cR == 0)
         return true;
     else if (isFolha())
         return false;
@@ -101,11 +115,25 @@ bool NoB::busca(int id, size_t& comps)
 
 size_t NoB::procuraFilho(int id)
 {
-    int i = this->n - 1;
-    while (i >= 0 && this->chaves[i] > id)
+    int i = this->n - 1; 
+    while (i >= 0 && this->compMaiorQueID(id, this->chaves[i]) < 0)
         i--;
     
     return i + 1;
+}
+
+int NoB::compMaiorQueID(size_t info, size_t id) {
+    Registro *r1 = this->tabela->get(info);
+    Registro *r2 = this->tabela->get(id);
+     if (r1->code() < r2->code())
+        return -1;
+    if (r2->code() < r1->code())
+        return 1;
+    if (r1->date() < r2->date())
+        return -1;
+    if (r2->date() < r1->date())
+        return 1;
+    return 0;
 }
 
 void NoB::insere(int id) 
@@ -114,9 +142,10 @@ void NoB::insere(int id)
     // Condicao: nó nao deve estar cheio
     if (isFolha()) {
         int i = this->n - 1;
+        int cR = this->compMaiorQueID(id, this->chaves[i]);
 
         // Move chaves maiores uma posicao à frente
-        for ( ; i >= 0 && this->chaves[i] > id; i--)
+        for ( ; i >= 0 && cR < 0; i--)
             this->chaves[i+1] = std::move(this->chaves[i]);
   
         this->chaves[i+1] = id;
@@ -142,14 +171,14 @@ void NoB::divideFilhoEInsere(NoB *filho, size_t i, int id)
     if (this->filhos[0] == NULL)
         this->filhos[0] = filho;
     
-    NoB *novoFilho = new NoB(filho->getM(), filho->folha);
+    NoB *novoFilho = new NoB(filho->getM(), filho->folha, this->tabela);
 
     // Guarda maior chave do vetor
     int maior = filho->chaves[filho->getN()-1];
     size_t j = filho->getN()-1;
 
     // Move chaves maiores que a chave id a ser inserida uma posicao à frente
-    for ( ; j > 0 && filho->chaves[j-1] > id; j--)
+    for ( ; j > 0 && this->compMaiorQueID(id, this->chaves[j-1]) < 0; j--)
         filho->chaves[j] = std::move(filho->chaves[j-1]);
     
     // Se o loop nao executou, entao a chave id é a maior das chaves

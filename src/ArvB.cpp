@@ -33,6 +33,10 @@ bool ArvB::busca(int id)
     return result;
 } 
 
+size_t ArvB::totalCasosCidade(std::string codigo) {
+    return this->raiz->totalCasosCidade(codigo);
+}
+
 size_t ArvB::comparacoesUltimaBusca()
 {
     return this->comparacoes;
@@ -56,12 +60,12 @@ void ArvB::insere(int id)
 
     if (this->raiz == NULL) {
         std::cout << "Raiz null" << std::endl;
-        this->raiz = new NoB(this->m, true);
+        this->raiz = new NoB(this->m, true, this->tabela);
         this->raiz->insere(id);
     } else if (this->raiz->getN() == this->m-1) {
         std::cout << "Raiz cheia" << std::endl;
         // Se raiz estiver cheia, cria nova raiz
-        NoB *novaRaiz = new NoB(this->m, false);
+        NoB *novaRaiz = new NoB(this->m, false, this->tabela);
         novaRaiz->divideFilhoEInsere(this->raiz, 0, id); // Redistribui as chaves da raiz antiga 
         this->raiz = novaRaiz; // Atualiza raiz
         std::cout << "Setou nova raiz" << std::endl;
