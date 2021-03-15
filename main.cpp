@@ -17,7 +17,9 @@
 template<typename ArvoreType>
 void insereNChavesDaTabela(ArvoreType& arv, HashTable& t, size_t n)
 {
+	std::cerr << "Pegando os valores da hash\n";
 	std::vector<size_t> valores = t.getRandomHashes(n);
+	std::cerr << "Terminou de pegar os valores da hash\n";
 
 	for (const auto& val : valores){
 		//std::cerr << "inserindo valor: " << val << std::endl;
@@ -93,16 +95,64 @@ int main(int argc, char *argv[])
 	size_t n = 0;
 
 	REMOVE_CSV_HEADER(arquivoPreProcessado);
-	while (arquivoPreProcessado >> r && n++ < 10001)
+	while (arquivoPreProcessado >> r && n++ < 50001)
 		tabela.insere(r);
 
 	arquivoPreProcessado.close();
 
+	std::cout << "Primeira insercão\n";
 	insercaoNasArvores(tabela, 10000);
+	std::cout << "Segunda insercão\n";
 	insercaoNasArvores(tabela, 50000);
-	insercaoNasArvores(tabela, 100000);
-	insercaoNasArvores(tabela, 500000);
-	insercaoNasArvores(tabela, 1000000);
+	// std::cout << "Terceira insercão\n";
+	// insercaoNasArvores(tabela, 100000);
+	// std::cout << "Quarta insercão\n";
+	// insercaoNasArvores(tabela, 500000);
+	// std::cout << "Quinta insercão\n";
+	// insercaoNasArvores(tabela, 1000000);
+
+	// S1
+
+	std::string codigo;
+	for (;;) {
+		/* code */
+		std::cout << "S1) Obter o total de casos de uma cidade\n\n";
+		std::cout << "Digite o código de uma cidade: ";
+
+		std::cin >> codigo;
+
+		if (CodigoDaCidade::validate(codigo))
+			break;
+
+		std::cout << "*** Código inválido ***\n\n";
+	}
+
+	std::cout << "Total de casos na cidade com código `" << codigo << "`: ";
+	// std::cout << arv.totalCasosCidade(codigo);
+	std::cout << '\n';
+	
+	// S2
+	double x0, y0;
+	double x1, y1;
+
+	std::cout << "S2) Obter o total de casos nas cidades contidas no\n";
+	std::cout << "intervalo [(x0, y0), (x1, y1)], onde x0 e x1 são latitudes e y0 e y1 são longitudes.\n\n";
+	std::cout << "Digite x0, y0, x1, y1: ";
+
+	std::cin >> x0 >> y0 >> x1 >> y1;
+
+	std::cout << "Buscando cidades no intervalo [(" << x0 << ", " << y0 << "), (" << x1 << ", " << y1 << ")]...\n";
+
+	quadtree.desenhaMapaRegional(x0, y0, x1, y1);
+	std::list<Cidade*> cidadesNaRegiao = quadtree.buscaRegiao(x0, y0, x1, y1);
+
+	std::cout << "Numero de cidades encontradas: " << cidadesNaRegiao.size() << '\n';
+
+	for (const auto cidade_ptr: cidadesNaRegiao) {
+		std::cout << "Dados da cidade: " << *cidade_ptr << '\n';
+		std::cout << "Total de casos: ";
+		// total de casos
+	}
 
 	return 0;
 }
