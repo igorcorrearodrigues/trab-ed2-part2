@@ -23,15 +23,24 @@ void insereNChavesDaTabela(ArvoreType& arv, HashTable& t, size_t n)
 		arv.insere(val);
 }
 
+int totalDeCasosB(std::string codigo, ArvB b) {
+	return b.totalCasosCidade(codigo);
+}
+
+size_t totalDeCasosAVL(std::string codigo, AVLTree avl) {	
+	return avl.totalCasosCidade(codigo);
+}
+
 void insercaoNasArvores(HashTable& tabela, size_t n)
 {
-	AVLTree arvoreAvl;
-	ArvB arvB20(20);
-	ArvB arvB200(200);
+	AVLTree arvoreAvl(&tabela);
+	//ArvB arvB20(20, &tabela);
+	//ArvB arvB200(200, &tabela);
 
 	insereNChavesDaTabela(arvoreAvl, tabela, n);
-	insereNChavesDaTabela(arvB20, tabela, n);
-	insereNChavesDaTabela(arvB200, tabela, n);
+	std::cout << "total de casos AVL: " << arvoreAvl.totalCasosCidade("120001.0") << std::endl;
+	//insereNChavesDaTabela(arvB20, tabela, n);
+	//insereNChavesDaTabela(arvB200, tabela, n);
 }
 
 int main(int argc, char *argv[])
@@ -77,17 +86,19 @@ int main(int argc, char *argv[])
 	HashTable tabela;
 	Registro r;
 
+	size_t n = 0;
+
 	REMOVE_CSV_HEADER(arquivoPreProcessado);
-	while (arquivoPreProcessado >> r)
+	while (arquivoPreProcessado >> r && n++ < 10001)
 		tabela.insere(r);
 
 	arquivoPreProcessado.close();
 
-	insercaoNasArvores(tabela, 98);
-	insercaoNasArvores(tabela, 50000);
-	insercaoNasArvores(tabela, 100000);
-	insercaoNasArvores(tabela, 500000);
-	insercaoNasArvores(tabela, 1000000);
+	insercaoNasArvores(tabela, 10000);
+	//insercaoNasArvores(tabela, 50000);
+	//insercaoNasArvores(tabela, 100000);
+	//insercaoNasArvores(tabela, 500000);
+	//insercaoNasArvores(tabela, 1000000);
 
 	return 0;
 }
