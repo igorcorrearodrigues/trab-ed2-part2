@@ -31,6 +31,7 @@ public:
 	~HashTable();
 
 	bool insere(const Registro& r);
+	Registro *get(size_t id);
 	Registro *buscar(std::string codigoDaCidade, std::string data);
 	void remover(std::string codigoDaCidade, std::string data);
 	std::vector<size_t> getRandomHashes(size_t n);

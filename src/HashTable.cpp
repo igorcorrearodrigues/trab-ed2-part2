@@ -107,6 +107,15 @@ Registro* HashTable::buscar(std::string codigo, std::string data)
 	return &(noptr->info);
 }
 
+Registro *HashTable::get(size_t id)
+{
+	if (id > TABLE_M)
+		return nullptr;
+	if (this->tabela[id].status == No::STATUS_OCUPADO)
+		return &(this->tabela[id].info);
+	return nullptr;
+}
+
 void HashTable::remover(std::string codigo, std::string data)
 {
 	No *noptr;
