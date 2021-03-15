@@ -137,7 +137,7 @@ void NoB::divideFilho(int i, NoB *filho)
         cerr << "j = " << j << "\n";
         bool condicao = j >= i;
         cerr << "j >= i ? " << condicao << "\n";
-        if (j == 0)
+        if (j < 0)
             break;
         chaves[j+1] = chaves[j]; 
     }
