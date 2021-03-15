@@ -41,7 +41,7 @@ bool ArvB::busca(int id)
 } 
 
 size_t ArvB::totalCasosCidade(std::string codigo) {
-    return this->raiz->totalCasosCidade(codigo);
+    return (raiz == NULL) ? 0 : raiz->totalCasosCidade(codigo);
 }
 
 size_t ArvB::comparacoesUltimaBusca()
@@ -59,13 +59,27 @@ const std::chrono::microseconds& ArvB::tempoUltimaBusca()
     return this->_tempoBusca;
 }
 
+int ArvB::compMaiorQueID(size_t info, size_t id) {
+    Registro *r1 = this->tabela->get(info);
+    Registro *r2 = this->tabela->get(id);
+     if (r1->code() < r2->code())
+        return -1;
+    if (r2->code() < r1->code())
+        return 1;
+    if (r1->date() < r2->date())
+        return -1;
+    if (r2->date() < r1->date())
+        return 1;
+    return 0;
+}
+
 void ArvB::insere(int id) 
 { 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    
+
     if (raiz == NULL) 
     { 
-        raiz = new NoB(d, true); 
+        raiz = new NoB(this->d, true, this->tabela); 
         raiz->chaves[0] = id; 
         raiz->n = 1; 
     } 
@@ -73,12 +87,12 @@ void ArvB::insere(int id)
     { 
         if (raiz->n == 2*d-1) // Se raiz estiver cheia
         { 
-            NoB *novaRaiz = new NoB(d, false); 
+            NoB *novaRaiz = new NoB(this->d, false, this->tabela); 
             novaRaiz->filhos[0] = raiz; 
             novaRaiz->divideFilho(0, raiz); 
 
             size_t i = 0; 
-            if (novaRaiz->chaves[0] < id) 
+            if (compMaiorQueID(id, novaRaiz->chaves[0]) > 0)
                 i++; 
             novaRaiz->filhos[i]->insereSeNaoCheio(id); 
   

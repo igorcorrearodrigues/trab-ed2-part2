@@ -16,7 +16,7 @@ class NoB
     int compMaiorQueID(size_t info, size_t id);
 
 public:
-    NoB(size_t d, bool folha);
+    NoB(size_t d, bool folha, HashTable *tabela);
     ~NoB();
  
     bool isFolha();

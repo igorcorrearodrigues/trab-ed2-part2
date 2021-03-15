@@ -4,7 +4,7 @@
 
 using namespace std;
 
-NoB::NoB(size_t d, bool folha)
+NoB::NoB(size_t d, bool folha, HashTable *tabela)
 {
     this->d = d;
     this->folha = folha;
@@ -13,6 +13,8 @@ NoB::NoB(size_t d, bool folha)
     this->filhos = new NoB *[2*d];
  
     this->n = 0;
+
+    this->tabela = tabela;
 }
 
 NoB::~NoB()
@@ -89,16 +91,17 @@ size_t NoB::procuraPosicao(int id, size_t& comps)
     
     return i;
 }
-
 size_t NoB::totalCasosCidade(std::string codigo) {
     size_t totalCasos = 0;
-    for (int i = 0; i < this->n; i++) {
+    for (size_t i = 0; i < this->n; i++) {
         Registro *cidade = this->tabela->get(this->chaves[i]);
         if (!isFolha())
             totalCasos += filhos[i]->totalCasosCidade(codigo);
         if (cidade->code() == codigo)
             totalCasos += cidade->cases();
     }
+    if (!isFolha())
+        totalCasos += filhos[this->n]->totalCasosCidade(codigo);
     return totalCasos;
 }
 
@@ -119,16 +122,14 @@ bool NoB::busca(int id, size_t& comps)
 void NoB::insereSeNaoCheio(int id) // Insere chave se nó nao estiver cheio
 { 
     int i = n-1; 
-    int cR = compMaiorQueID(id, this->chaves[i]);
   
     if (isFolha()) 
     {
-        while (i >= 0 && cR < 0) 
+        while (i >= 0 && compMaiorQueID(id, this->chaves[i]) < 0) 
         { 
             chaves[i+1] = chaves[i]; 
-            i--; 
+            i--;
         } 
-  
         chaves[i+1] = id; 
         n = n+1; 
     } 
@@ -140,16 +141,16 @@ void NoB::insereSeNaoCheio(int id) // Insere chave se nó nao estiver cheio
         if (filhos[i+1]->n == 2*d-1) // Se filho estiver cheio
         { 
             divideFilho(i+1, filhos[i+1]); 
-            if (chaves[i+1] < id) 
+            if (compMaiorQueID(id, this->chaves[i+1]) > 0) 
                 i++; 
         } 
         filhos[i+1]->insereSeNaoCheio(id); 
-    } 
+    }
 } 
 
 void NoB::divideFilho(int i, NoB *filho) // Divide filho e seta chave mediana para o pai
 { 
-    NoB *novoFilho = new NoB(filho->d, filho->isFolha()); 
+    NoB *novoFilho = new NoB(filho->d, filho->isFolha(), filho->tabela); 
     novoFilho->n = d - 1; 
   
     for (size_t j = 0; j < d-1; j++) 

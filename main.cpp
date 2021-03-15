@@ -19,8 +19,10 @@ void insereNChavesDaTabela(ArvoreType& arv, HashTable& t, size_t n)
 {
 	std::vector<size_t> valores = t.getRandomHashes(n);
 
-	for (const auto& val : valores)
+	for (const auto& val : valores){
+		//std::cerr << "inserindo valor: " << val << std::endl;
 		arv.insere(val);
+	}
 }
 
 int totalDeCasosB(std::string codigo, ArvB b) {
@@ -34,13 +36,16 @@ size_t totalDeCasosAVL(std::string codigo, AVLTree avl) {
 void insercaoNasArvores(HashTable& tabela, size_t n)
 {
 	AVLTree arvoreAvl(&tabela);
-	//ArvB arvB20(20, &tabela);
-	//ArvB arvB200(200, &tabela);
+	ArvB arvB20(20, &tabela);
+	ArvB arvB200(200, &tabela);
 
 	insereNChavesDaTabela(arvoreAvl, tabela, n);
 	std::cout << "total de casos AVL: " << arvoreAvl.totalCasosCidade("120001.0") << std::endl;
-	//insereNChavesDaTabela(arvB20, tabela, n);
-	//insereNChavesDaTabela(arvB200, tabela, n);
+	insereNChavesDaTabela(arvB20, tabela, n);
+	std::cout << "total de casos B20: " << arvB20.totalCasosCidade("120001.0") << std::endl;
+	insereNChavesDaTabela(arvB200, tabela, n);
+	std::cout << "total de casos B200: " << arvB200.totalCasosCidade("120001.0") << std::endl;
+
 }
 
 int main(int argc, char *argv[])
