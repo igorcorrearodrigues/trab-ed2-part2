@@ -45,6 +45,7 @@ void insereNaArvoreAvl(size_t n)
         insereNaTabelaHash(ht, arquivoSaida, n);
         insereNaArvoreAvl(arv, arquivoSaida, n);
     } else {
+        insereNaTabelaHash(ht, std::cout, n);
         insereNaArvoreAvl(arv, std::cout, n);
     }
 }
