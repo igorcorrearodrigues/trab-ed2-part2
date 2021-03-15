@@ -3,23 +3,18 @@
 
 #include "NoB.hpp"
 
-class ArvB 
-{ 
+class ArvB
+{
     NoB *raiz;
-    size_t m; // Ordem da arvore, representa o maximo de filhos
+    size_t d;
 public:
-    ArvB(size_t m)
-    {
-        this->raiz = NULL;
-        this->m = m;
-    };
-  
+    ArvB(size_t d);
+ 
     void imprimeLinear();
     void imprimeEstrutura();
+ 
     bool busca(int id);
-    void insere(int id);
-
-    size_t getAltura();
+    void insere(int id); 
 };
 
 #endif /* ARVB_HPP */
