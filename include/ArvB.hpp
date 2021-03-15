@@ -1,20 +1,36 @@
 #ifndef ARVB_HPP
 #define ARVB_HPP
 
+#include <chrono>
+
 #include "NoB.hpp"
 
 class ArvB
 {
     NoB *raiz;
-    size_t d;
+    size_t d; // Numero minimo de filhos
+
+    HashTable *tabela;
+
+    size_t comparacoes;
+    std::chrono::microseconds _tempoBusca;
+    std::chrono::microseconds _tempoInsercao;
+
 public:
-    ArvB(size_t d);
+    ArvB(size_t d, HashTable *tabela);
  
     void imprimeLinear();
     void imprimeEstrutura();
  
     bool busca(int id);
     void insere(int id); 
+
+    size_t totalCasosCidade(std::string codigo);
+
+    size_t comparacoesUltimaBusca();
+    const std::chrono::microseconds& tempoUltimaBusca();
+    const std::chrono::microseconds& tempoUltimaInsercao();
+
 
     size_t getAltura(); 
 };

@@ -1,6 +1,9 @@
 #ifndef NOB_HPP
 #define NOB_HPP
 
+#include "HashTable.hpp"
+#include "Registro.hpp"
+
 class NoB
 {
     int *chaves;
@@ -8,6 +11,10 @@ class NoB
     NoB **filhos;
     size_t n;
     bool folha;
+
+    HashTable *tabela;
+    int compMaiorQueID(size_t info, size_t id);
+
 public:
     NoB(size_t d, bool folha);
     ~NoB();
@@ -15,8 +22,9 @@ public:
     bool isFolha();
     void imprimeLinear(); // Imprime as chaves em ordem crescente
     void imprimeEstrutura(); // Imprime a estrutura da arvore
- 
-    bool busca(int id);
+    size_t procuraPosicao(int id, size_t& comps);
+    size_t totalCasosCidade(std::string codigo);
+    bool busca(int id, size_t& comps);
     void insereSeNaoCheio(int id); 
     void divideFilho(int i, NoB *filho); 
 

@@ -2,12 +2,11 @@
 
 #include "ArvB.hpp"
 
-using namespace std;
-
-ArvB::ArvB(size_t d) 
+ArvB::ArvB(size_t d, HashTable *tabela) 
 {  
     this->raiz = NULL;
     this->d = d; 
+    this->tabela = tabela;
 }
 
 void ArvB::imprimeLinear()
@@ -28,9 +27,42 @@ void ArvB::imprimeEstrutura()
     std::cout << "\n";
 }
 
+bool ArvB::busca(int id) 
+{
+    this->comparacoes = 0;
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+    bool result = (this->raiz == NULL) ? false : this->raiz->busca(id, comparacoes); 
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+    this->_tempoBusca = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+    return result;
+} 
+
+size_t ArvB::totalCasosCidade(std::string codigo) {
+    return this->raiz->totalCasosCidade(codigo);
+}
+
+size_t ArvB::comparacoesUltimaBusca()
+{
+    return this->comparacoes;
+}
+
+const std::chrono::microseconds& ArvB::tempoUltimaInsercao()
+{
+    return this->_tempoInsercao;
+}
+
+const std::chrono::microseconds& ArvB::tempoUltimaBusca()
+{
+    return this->_tempoBusca;
+}
+
 void ArvB::insere(int id) 
 { 
-    cout << "Insere " << id << "\n";
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    
     if (raiz == NULL) 
     { 
         raiz = new NoB(d, true); 
@@ -55,6 +87,9 @@ void ArvB::insere(int id)
         else 
             raiz->insereSeNaoCheio(id); 
     } 
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    this->_tempoInsercao = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
 } 
 
 size_t ArvB::getAltura()

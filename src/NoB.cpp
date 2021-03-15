@@ -66,29 +66,64 @@ void NoB::imprimeEstrutura()
             filhos[i]->imprimeEstrutura();
     }
 }
- 
-bool NoB::busca(int id)
+
+int NoB::compMaiorQueID(size_t info, size_t id) {
+    Registro *r1 = this->tabela->get(info);
+    Registro *r2 = this->tabela->get(id);
+     if (r1->code() < r2->code())
+        return -1;
+    if (r2->code() < r1->code())
+        return 1;
+    if (r1->date() < r2->date())
+        return -1;
+    if (r2->date() < r1->date())
+        return 1;
+    return 0;
+}
+
+size_t NoB::procuraPosicao(int id, size_t& comps)
 {
     size_t i = 0;
-    while (i < n && id > chaves[i])
+    while (i < this->n && (++comps) && this->compMaiorQueID(id, this->chaves[i]) > 0)
         i++;
- 
-    if (chaves[i] == id)
+    
+    return i;
+}
+
+size_t NoB::totalCasosCidade(std::string codigo) {
+    size_t totalCasos = 0;
+    for (int i = 0; i < this->n; i++) {
+        Registro *cidade = this->tabela->get(this->chaves[i]);
+        if (!isFolha())
+            totalCasos += filhos[i]->totalCasosCidade(codigo);
+        if (cidade->code() == codigo)
+            totalCasos += cidade->cases();
+    }
+    return totalCasos;
+}
+
+bool NoB::busca(int id, size_t& comps) 
+{
+    // Procura a posicao da chave
+    size_t i = procuraPosicao(id, comps);
+    int cR = this->compMaiorQueID(id, this->chaves[i]); 
+    
+    if ((++comps) && cR == 0)
         return true;
- 
-    if (isFolha())
+    else if (isFolha())
         return false;
- 
-    return filhos[i]->busca(id);
+
+    return filhos[i]->busca(id, comps);
 }
 
 void NoB::insereSeNaoCheio(int id) // Insere chave se nó nao estiver cheio
 { 
     int i = n-1; 
+    int cR = compMaiorQueID(id, this->chaves[i]);
   
     if (isFolha()) 
     {
-        while (i >= 0 && chaves[i] > id) 
+        while (i >= 0 && cR < 0) 
         { 
             chaves[i+1] = chaves[i]; 
             i--; 
@@ -99,7 +134,7 @@ void NoB::insereSeNaoCheio(int id) // Insere chave se nó nao estiver cheio
     } 
     else 
     { 
-        while (i >= 0 && chaves[i] > id) 
+        while (i >= 0 && compMaiorQueID(id, this->chaves[i]) < 0) 
             i--; 
 
         if (filhos[i+1]->n == 2*d-1) // Se filho estiver cheio
@@ -140,7 +175,7 @@ void NoB::divideFilho(int i, NoB *filho) // Divide filho e seta chave mediana pa
     }
     chaves[i] = filho->chaves[d-1]; 
   
-    this->n = this->n + 1; 
+    this->n++; 
 } 
 
 size_t NoB::getAltura()
