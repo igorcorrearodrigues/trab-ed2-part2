@@ -1,5 +1,6 @@
 #include "AVLTree.hpp"
 
+
 #include <algorithm>
 #include <iostream>
 
@@ -8,7 +9,7 @@ AVLTree::~AVLTree()
     freeNodes(this->root);
 }
 
-AVLTree::AVLTree(): root(nullptr)
+AVLTree::AVLTree(HashTable *tabela): root(nullptr), tabela(tabela)
 {
 }
 
@@ -21,6 +22,36 @@ void AVLTree::freeNodes(AVLNode *no)
     delete no;
 }
 
+int AVLTree::compMaiorQueID(size_t info, size_t id) {
+    Registro *r1 = this->tabela->get(info);
+    Registro *r2 = this->tabela->get(id);
+     if (r1->code() < r2->code())
+        return -1;
+    if (r2->code() < r1->code())
+        return 1;
+    if (r1->date() < r2->date())
+        return -1;
+    if (r2->date() < r1->date())
+        return 1;
+    return 0;
+}
+
+int AVLTree::totalCasosCidade(std::string codigo) {
+    return this->totalCasosCidade(this->root, codigo);
+}
+
+int AVLTree::totalCasosCidade(AVLNode *no, std::string codigo) {
+    if (no == nullptr) {
+        return 0;
+    }
+    Registro *cidade = this->tabela->get(no->info);
+    if (cidade->code() > codigo)
+        return this->totalCasosCidade(no->esq, codigo);
+    if (cidade->code() < codigo)
+        return this->totalCasosCidade(no->dir, codigo);
+    return cidade->cases() + this->totalCasosCidade(no->dir, codigo) + this->totalCasosCidade(no->esq, codigo);
+}
+
 AVLNode *AVLTree::insere(AVLNode *no, size_t info)
 {
     if (no == nullptr) {
@@ -28,10 +59,10 @@ AVLNode *AVLTree::insere(AVLNode *no, size_t info)
         no->info = info;
         return no;
     }
-
-    if (info > no->info) {
+    int cR = this->compMaiorQueID(info, no->info);
+    if (cR > 0) {
         no->dir = insere(no->dir, info);
-    } else if (info < no->info) {
+    } else if (cR < 0) {
         no->esq = insere(no->esq, info);
     } else //no ja existe na arvore
         return no; 
@@ -57,9 +88,11 @@ bool AVLTree::busca(const AVLNode *no, size_t info, size_t& comps)
 {
     if (no == nullptr)
         return false;
-    if ((++comps) && no->info == info)
+    int cR = this->compMaiorQueID(info, no->info);
+    ++comps;
+    if (cR == 0)
         return true;
-    if ((++comps) && info < no->info)
+    if (cR < 0)
         return busca(no->esq, info, comps);
     return busca(no->dir, info, comps);
 }
