@@ -41,12 +41,18 @@ bool ArvB::busca(int id)
 } 
 
 size_t ArvB::totalCasosCidade(std::string codigo) {
-    return (raiz == NULL) ? 0 : raiz->totalCasosCidade(codigo);
+    this->compTotalCasos = 0;
+    return (raiz == NULL) ? 0 : raiz->totalCasosCidade(codigo, compTotalCasos);
 }
 
 size_t ArvB::comparacoesUltimaBusca()
 {
     return this->comparacoes;
+}
+
+size_t ArvB::comparacoesUltimaTotalCasos()
+{
+    return this->compTotalCasos;
 }
 
 const std::chrono::microseconds& ArvB::tempoUltimaInsercao()

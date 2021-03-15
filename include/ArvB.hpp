@@ -13,6 +13,7 @@ class ArvB
     HashTable *tabela;
 
     size_t comparacoes;
+    size_t compTotalCasos;
     std::chrono::microseconds _tempoBusca;
     std::chrono::microseconds _tempoInsercao;
 
@@ -30,6 +31,7 @@ public:
     HashTable *getHashTable();
 
     size_t comparacoesUltimaBusca();
+    size_t comparacoesUltimaTotalCasos();
     const std::chrono::microseconds& tempoUltimaBusca();
     const std::chrono::microseconds& tempoUltimaInsercao();
 

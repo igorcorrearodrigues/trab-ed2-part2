@@ -91,17 +91,18 @@ size_t NoB::procuraPosicao(int id, size_t& comps)
     
     return i;
 }
-size_t NoB::totalCasosCidade(std::string codigo) {
+size_t NoB::totalCasosCidade(std::string codigo, size_t& comps) {
     size_t totalCasos = 0;
     for (size_t i = 0; i < this->n; i++) {
         Registro *cidade = this->tabela->get(this->chaves[i]);
         if (!isFolha())
-            totalCasos += filhos[i]->totalCasosCidade(codigo);
+            totalCasos += filhos[i]->totalCasosCidade(codigo, comps);
+        ++comps;
         if (cidade->code() == codigo)
             totalCasos += cidade->cases();
     }
     if (!isFolha())
-        totalCasos += filhos[this->n]->totalCasosCidade(codigo);
+        totalCasos += filhos[this->n]->totalCasosCidade(codigo, comps);
     return totalCasos;
 }
 

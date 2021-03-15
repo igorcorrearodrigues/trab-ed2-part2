@@ -23,7 +23,7 @@ public:
     void imprimeLinear(); // Imprime as chaves em ordem crescente
     void imprimeEstrutura(); // Imprime a estrutura da arvore
     size_t procuraPosicao(int id, size_t& comps);
-    size_t totalCasosCidade(std::string codigo);
+    size_t totalCasosCidade(std::string codigo, size_t& comps);
     bool busca(int id, size_t& comps);
     void insereSeNaoCheio(int id); 
     void divideFilho(int i, NoB *filho); 
