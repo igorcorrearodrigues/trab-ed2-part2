@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 	std::ifstream arquivoCoordenadas(nomeArquivoCoordenadas);
 
 	if (!arquivoCoordenadas.is_open()) {
-		// std::cerr << nomeDoPrograma << ": falha ao abrir o arquivo: `" << nomeArquivoCoordenadas << "`\n";
+		std::cerr << nomeDoPrograma << ": falha ao abrir o arquivo: `" << nomeArquivoCoordenadas << "`\n";
 		return ERR_FALHA_ARQ;
 	}
 
@@ -78,12 +78,12 @@ int main(int argc, char *argv[])
 	Registro r;
 
 	REMOVE_CSV_HEADER(arquivoPreProcessado);
-	while (arquivoPreProcessado)
+	while (arquivoPreProcessado >> r)
 		tabela.insere(r);
 
 	arquivoPreProcessado.close();
 
-	insercaoNasArvores(tabela, 10000);
+	insercaoNasArvores(tabela, 98);
 	insercaoNasArvores(tabela, 50000);
 	insercaoNasArvores(tabela, 100000);
 	insercaoNasArvores(tabela, 500000);
