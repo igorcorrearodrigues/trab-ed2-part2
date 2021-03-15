@@ -2,6 +2,14 @@
 
 #include "ArvB.hpp"
 
+using namespace std;
+
+ArvB::ArvB(size_t d) 
+{  
+    this->raiz = NULL;
+    this->d = d; 
+}
+
 void ArvB::imprimeLinear()
 {
     if (this->raiz != NULL) 
@@ -20,66 +28,36 @@ void ArvB::imprimeEstrutura()
     std::cout << "\n";
 }
 
-bool ArvB::busca(int id) 
-{
-    this->comparacoes = 0;
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-    bool result = (this->raiz == NULL) ? false : this->raiz->busca(id, comparacoes); 
-
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
-    this->_tempoBusca = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
-    return result;
-} 
-
-size_t ArvB::totalCasosCidade(std::string codigo) {
-    return this->raiz->totalCasosCidade(codigo);
-}
-
-size_t ArvB::comparacoesUltimaBusca()
-{
-    return this->comparacoes;
-}
-
-const std::chrono::microseconds& ArvB::tempoUltimaInsercao()
-{
-    return this->_tempoInsercao;
-}
-
-const std::chrono::microseconds& ArvB::tempoUltimaBusca()
-{
-    return this->_tempoBusca;
-}
-
 void ArvB::insere(int id) 
-{
-    std::cout << "Insere " << id << "\n";
+{ 
+    cout << "Insere " << id << "\n";
+    if (raiz == NULL) 
+    { 
+        raiz = new NoB(d, true); 
+        raiz->chaves[0] = id; 
+        raiz->n = 1; 
+    } 
+    else 
+    { 
+        if (raiz->n == 2*d-1) // Se raiz estiver cheia
+        { 
+            NoB *novaRaiz = new NoB(d, false); 
+            novaRaiz->filhos[0] = raiz; 
+            novaRaiz->divideFilho(0, raiz); 
 
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-    if (this->raiz == NULL) {
-        std::cout << "Raiz null" << std::endl;
-        this->raiz = new NoB(this->m, true, this->tabela);
-        this->raiz->insere(id);
-    } else if (this->raiz->getN() == this->m-1) {
-        std::cout << "Raiz cheia" << std::endl;
-        // Se raiz estiver cheia, cria nova raiz
-        NoB *novaRaiz = new NoB(this->m, false, this->tabela);
-        novaRaiz->divideFilhoEInsere(this->raiz, 0, id); // Redistribui as chaves da raiz antiga 
-        this->raiz = novaRaiz; // Atualiza raiz
-        std::cout << "Setou nova raiz" << std::endl;
-    }
-    else {
-        this->raiz->insere(id);
-    }
-
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
-    this->_tempoInsercao = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
-}
+            size_t i = 0; 
+            if (novaRaiz->chaves[0] < id) 
+                i++; 
+            novaRaiz->filhos[i]->insereSeNaoCheio(id); 
+  
+            raiz = novaRaiz; 
+        } 
+        else 
+            raiz->insereSeNaoCheio(id); 
+    } 
+} 
 
 size_t ArvB::getAltura()
 {
-    return (this->raiz == NULL) ? 0 : this->raiz->getAltura();
+    return (raiz == NULL) ? 0 : raiz->getAltura();
 }
