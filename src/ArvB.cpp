@@ -33,32 +33,31 @@ void ArvB::insere(int id)
     cout << "Insere " << id << "\n";
     if (raiz == NULL) 
     { 
-        cout << "Raiz nula\n";
         raiz = new NoB(d, true); 
         raiz->chaves[0] = id; 
         raiz->n = 1; 
-        cout << "Setou nova raiz\n";
     } 
     else 
     { 
-        if (raiz->n == 2*d-1) 
+        if (raiz->n == 2*d-1) // Se raiz estiver cheia
         { 
-            cerr << "Raiz cheia, chama divide filho\n";
             NoB *novaRaiz = new NoB(d, false); 
-  
             novaRaiz->filhos[0] = raiz; 
-  
             novaRaiz->divideFilho(0, raiz); 
-            cerr << "Dividiu filho\n";
+
             size_t i = 0; 
             if (novaRaiz->chaves[0] < id) 
                 i++; 
             novaRaiz->filhos[i]->insereSeNaoCheio(id); 
   
             raiz = novaRaiz; 
-            cout << "Inseriu e setou nova raiz\n";
         } 
         else 
             raiz->insereSeNaoCheio(id); 
     } 
 } 
+
+size_t ArvB::getAltura()
+{
+    return (raiz == NULL) ? 0 : raiz->getAltura();
+}

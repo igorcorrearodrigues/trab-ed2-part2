@@ -23,12 +23,17 @@ NoB::~NoB()
     delete [] this->chaves;
 }
 
+bool NoB::isFolha()
+{
+    return folha;
+}
+
 void NoB::imprimeLinear()
 {
     for (size_t i = 0; i < this->n; i++) 
     {
         // Percorre os nós filhos primeiro, para manter a ordem crescente
-        if (!this->folha)
+        if (!isFolha())
             filhos[i]->imprimeLinear();
         
         // Imprime as chaves atuais
@@ -36,7 +41,7 @@ void NoB::imprimeLinear()
     }
   
     // Percorre o último nó filho
-    if (!this->folha)
+    if (!isFolha())
         filhos[this->n]->imprimeLinear(); 
 }
 
@@ -57,31 +62,31 @@ void NoB::imprimeEstrutura()
     for (size_t i = 0; i <= this->n; i++) 
     {
         // Percorre os n filhos
-        if (!this->folha)
+        if (!isFolha())
             filhos[i]->imprimeEstrutura();
     }
 }
  
 bool NoB::busca(int id)
 {
-    int i = 0;
-    while (i < (int) n && id > chaves[i])
+    size_t i = 0;
+    while (i < n && id > chaves[i])
         i++;
  
     if (chaves[i] == id)
         return true;
  
-    if (this->folha)
+    if (isFolha())
         return false;
  
     return filhos[i]->busca(id);
 }
 
-void NoB::insereSeNaoCheio(int id) 
+void NoB::insereSeNaoCheio(int id) // Insere chave se nó nao estiver cheio
 { 
     int i = n-1; 
   
-    if (this->folha) 
+    if (isFolha()) 
     {
         while (i >= 0 && chaves[i] > id) 
         { 
@@ -96,8 +101,8 @@ void NoB::insereSeNaoCheio(int id)
     { 
         while (i >= 0 && chaves[i] > id) 
             i--; 
-  
-        if (filhos[i+1]->n == 2*d-1) 
+
+        if (filhos[i+1]->n == 2*d-1) // Se filho estiver cheio
         { 
             divideFilho(i+1, filhos[i+1]); 
             if (chaves[i+1] < id) 
@@ -107,21 +112,19 @@ void NoB::insereSeNaoCheio(int id)
     } 
 } 
 
-void NoB::divideFilho(int i, NoB *filho) 
+void NoB::divideFilho(int i, NoB *filho) // Divide filho e seta chave mediana para o pai
 { 
-    NoB *novoFilho = new NoB(filho->d, filho->folha); 
+    NoB *novoFilho = new NoB(filho->d, filho->isFolha()); 
     novoFilho->n = d - 1; 
   
     for (size_t j = 0; j < d-1; j++) 
         novoFilho->chaves[j] = filho->chaves[j+d]; 
-    cerr << "Copiou chaves\n";
   
-    if (!filho->folha) 
+    if (!filho->isFolha()) 
     { 
         for (size_t j = 0; j < d; j++) 
             novoFilho->filhos[j] = filho->filhos[j+d]; 
     } 
-    cerr << "Copiou filhos\n";
   
     filho->n = d - 1; 
   
@@ -129,21 +132,27 @@ void NoB::divideFilho(int i, NoB *filho)
         filhos[j+1] = filhos[j]; 
   
     filhos[i+1] = novoFilho; 
-    cerr << "Moveu filhos para inserir na posicao\n";
   
-  cerr << "n = " << this->n << "\n";
     for (int j = this->n-1; j >= i; j--) {
-        cerr << "i = " << i << "\n";
-        cerr << "j = " << j << "\n";
-        bool condicao = j >= i;
-        cerr << "j >= i ? " << condicao << "\n";
         if (j < 0)
             break;
         chaves[j+1] = chaves[j]; 
     }
-  cerr << "Moveu chaves\n";
     chaves[i] = filho->chaves[d-1]; 
   
     this->n = this->n + 1; 
-    cerr << "Fim\n";
 } 
+
+size_t NoB::getAltura()
+{
+    if (isFolha())
+        return 0;
+    
+    size_t altura, maior = 0;
+    for (size_t i = 0; i <= n; i++) {
+        altura = filhos[i]->getAltura();
+        if (maior < altura)
+            maior = altura;
+    }
+    return maior + 1;
+}

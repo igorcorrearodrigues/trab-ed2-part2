@@ -12,12 +12,15 @@ public:
     NoB(size_t d, bool folha);
     ~NoB();
  
+    bool isFolha();
     void imprimeLinear(); // Imprime as chaves em ordem crescente
     void imprimeEstrutura(); // Imprime a estrutura da arvore
  
     bool busca(int id);
     void insereSeNaoCheio(int id); 
     void divideFilho(int i, NoB *filho); 
+
+    size_t getAltura();
 
 friend class ArvB;
 };

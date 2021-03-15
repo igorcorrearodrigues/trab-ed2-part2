@@ -15,6 +15,8 @@ public:
  
     bool busca(int id);
     void insere(int id); 
+
+    size_t getAltura(); 
 };
 
 #endif /* ARVB_HPP */
