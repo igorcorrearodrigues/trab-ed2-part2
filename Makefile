@@ -1,5 +1,5 @@
 CC=g++
-CC_FLAGS=-W -Wall -pedantic -std=c++11
+CC_FLAGS=-W -Wall -pedantic -std=c++17
 INC_DIR=./include
 SRC_DIR=./src
 

@@ -65,10 +65,8 @@ int main(int argc, char *argv[])
 	HashTable tabela;
 	Registro r;
 
-	size_t n = 0;
-
 	REMOVE_CSV_HEADER(arquivoPreProcessado);
-	while (arquivoPreProcessado >> r && n++ < 10000)
+	while (arquivoPreProcessado >> r)
 		tabela.insere(r);
 
 	arquivoPreProcessado.close();

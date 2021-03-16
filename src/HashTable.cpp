@@ -1,6 +1,7 @@
 #include "HashTable.hpp"
 
 #include <algorithm>
+#include <random>
 
 No::No(): info(), status(STATUS_LIVRE)
 {
@@ -128,9 +129,20 @@ void HashTable::remover(std::string codigo, std::string data)
 
 std::vector<size_t> HashTable::getRandomHashes(size_t n)
 {
-	std::vector<size_t> aleatorios(this->hashes);
-	
-	std::random_shuffle(aleatorios.begin(), aleatorios.end());
-	aleatorios.resize(n);
-	return aleatorios;
+	size_t limit;
+
+    if (n <= this->hashes.size())
+        limit = n;
+    else
+        limit = this->hashes.size();
+
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 gen(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(0, limit); // define the range
+
+    std::vector<size_t> aleatorios;
+
+    std::sample(this->hashes.begin(), this->hashes.end(),
+		std::back_inserter(aleatorios), n,  std::mt19937{std::random_device{}()});
+    return aleatorios;
 }
