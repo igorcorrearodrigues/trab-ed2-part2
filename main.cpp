@@ -15,43 +15,16 @@
 #define ERR_FALHA_ARQ  2
 
 template<typename ArvoreType>
-void insereNChavesDaTabela(ArvoreType& arv, HashTable& t, size_t n)
-{
-	std::cerr << "Pegando os valores da hash\n";
-	std::vector<size_t> valores = t.getRandomHashes(n);
-	std::cerr << "Terminou de pegar os valores da hash\n";
+void insereNChavesDaTabela(ArvoreType& arv, HashTable& t, size_t n);
 
-	for (const auto& val : valores){
-		//std::cerr << "inserindo valor: " << val << std::endl;
-		arv.insere(val);
-	}
-}
-
-int totalDeCasosB(std::string codigo, ArvB b) {
-	return b.totalCasosCidade(codigo);
-}
-
-size_t totalDeCasosAVL(std::string codigo, AVLTree avl) {	
-	return avl.totalCasosCidade(codigo);
-}
-
-void insercaoNasArvores(HashTable& tabela, size_t n)
-{
-	AVLTree arvoreAvl(&tabela);
-	ArvB arvB20(20, &tabela);
-	ArvB arvB200(200, &tabela);
-
-	insereNChavesDaTabela(arvoreAvl, tabela, n);
-	std::cout << "total de casos AVL: " << arvoreAvl.totalCasosCidade("120001") << std::endl;
-	insereNChavesDaTabela(arvB20, tabela, n);
-	std::cout << "total de casos B20: " << arvB20.totalCasosCidade("120001") << std::endl;
-	insereNChavesDaTabela(arvB200, tabela, n);
-	std::cout << "total de casos B200: " << arvB200.totalCasosCidade("120001") << std::endl;
-}
+template<typename ArvType>
+void insereNChavesNaArvore(HashTable& ht, Quadtree& quad, size_t n, ArvType& arv, std::string title);
 
 int main(int argc, char *argv[])
 {
 	const char *nomeDoPrograma = *argv;
+
+	srand(time(NULL));
 
 	if (argc != 2) {
 		std::cerr << "Uso: " << nomeDoPrograma << " DIR_DOS_ARQUIVOS_CSV\n";
@@ -84,7 +57,7 @@ int main(int argc, char *argv[])
 	std::ifstream arquivoPreProcessado(nomeArquivo);
 
 	if (!arquivoPreProcessado.is_open()) {
-		std::cerr << nomeDoPrograma << ":falha ao abrir o arquivo `" << nomeArquivo << "`\n";
+		std::cerr << nomeDoPrograma << ": falha ao abrir o arquivo `" << nomeArquivo << "`\n";
 		return ERR_FALHA_ARQ;
 	}
 
@@ -95,27 +68,94 @@ int main(int argc, char *argv[])
 	size_t n = 0;
 
 	REMOVE_CSV_HEADER(arquivoPreProcessado);
-	while (arquivoPreProcessado >> r && n++ < 50001)
+	while (arquivoPreProcessado >> r && n++ < 10000)
 		tabela.insere(r);
 
 	arquivoPreProcessado.close();
 
-	std::cout << "Primeira insercão\n";
-	insercaoNasArvores(tabela, 10000);
-	std::cout << "Segunda insercão\n";
-	insercaoNasArvores(tabela, 50000);
-	// std::cout << "Terceira insercão\n";
-	// insercaoNasArvores(tabela, 100000);
-	// std::cout << "Quarta insercão\n";
-	// insercaoNasArvores(tabela, 500000);
-	// std::cout << "Quinta insercão\n";
-	// insercaoNasArvores(tabela, 1000000);
+	// Arvore AVL
+	{
+		AVLTree avl(&tabela);
+		insereNChavesNaArvore(tabela, quadtree, 10000, avl, "AVL_10.000.txt");
+	}
+	// {
+	// 	AVLTree avl(&tabela);
+	// 	insereNChavesNaArvore(tabela, quadtree, 50000, avl, "AVL_500.000.txt");
+	// }
+	// {
+	// 	AVLTree avl(&tabela);
+	// 	insereNChavesNaArvore(tabela, quadtree, 100000, avl, "AVL_100.000.txt");
+	// }
+	// {
+	// 	AVLTree avl(&tabela);
+	// 	insereNChavesNaArvore(tabela, quadtree, 500000, avl, "AVL_500.000.txt");
+	// }
+	// {
+	// 	AVLTree avl(&tabela);
+	// 	insereNChavesNaArvore(tabela, quadtree, 1000000, avl, "AVL_1000.000.txt");
+	// }
 
+	// Arvore B20
+	{
+		ArvB arv(20, &tabela);
+		insereNChavesNaArvore(tabela, quadtree, 10000, arv, "ArvB20_10.000.txt");
+	}
+	// {
+	// 	ArvB arv(20, &tabela);
+	// 	insereNChavesNaArvore(tabela, quadtree, 50000, arv, "ArvB20_500.000.txt");
+	// }
+	// {
+	// 	ArvB arv(20, &tabela);
+	// 	insereNChavesNaArvore(tabela, quadtree, 100000, arv, "ArvB20_100.000.txt");
+	// }
+	// {
+	// 	ArvB arv(20, &tabela);
+	// 	insereNChavesNaArvore(tabela, quadtree, 500000, arv, "ArvB20_500.000.txt");
+	// }
+	// {
+	// 	ArvB arv(20, &tabela);
+	// 	insereNChavesNaArvore(tabela, quadtree, 1000000, arv, "ArvB20_1000.000.txt");
+	// }
+
+	// Arvore B200
+	{
+		ArvB arv(200, &tabela);
+		insereNChavesNaArvore(tabela, quadtree, 10000, arv, "ArvB200_10.000.txt");
+	}
+	// {
+	// 	ArvB arv(200, &tabela);
+	// 	insereNChavesNaArvore(tabela, quadtree, 50000, arv, "ArvB200_500.000.txt");
+	// }
+	// {
+	// 	ArvB arv(200, &tabela);
+	// 	insereNChavesNaArvore(tabela, quadtree, 100000, arv, "ArvB200_100.000.txt");
+	// }
+	// {
+	// 	ArvB arv(200, &tabela);
+	// 	insereNChavesNaArvore(tabela, quadtree, 500000, arv, "ArvB200_500.000.txt");
+	// }
+	// {
+	// 	ArvB arv(200, &tabela);
+	// 	insereNChavesNaArvore(tabela, quadtree, 1000000, arv, "ArvB200_1000.000.txt");
+	// }
+	return 0;
+}
+
+template<typename ArvType>
+void insereNChavesNaArvore(HashTable& ht, Quadtree& quad, size_t n, ArvType& arv, std::string fileName)
+{
+	std::ofstream out(fileName);
+
+	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	insereNChavesDaTabela(arv, ht, n);
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+	out << "Tempo de inserção de " << n << " chaves [µs]:";
+	out << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << '\n';
 	// S1
 
 	std::string codigo;
 	for (;;) {
-		/* code */
 		std::cout << "S1) Obter o total de casos de uma cidade\n\n";
 		std::cout << "Digite o código de uma cidade: ";
 
@@ -127,9 +167,13 @@ int main(int argc, char *argv[])
 		std::cout << "*** Código inválido ***\n\n";
 	}
 
-	std::cout << "Total de casos na cidade com código `" << codigo << "`: ";
-	// std::cout << arv.totalCasosCidade(codigo);
-	std::cout << '\n';
+	out << "Total de casos na cidade com código `" << codigo << "`: ";
+	begin = std::chrono::steady_clock::now();
+	out << arv.totalCasosCidade(codigo) << '\n';
+	end = std::chrono::steady_clock::now();
+	out << "Numero de comparações: " << arv.comparacoesUltimaTotalCasos() << '\n';
+	out << "Tempo busca [µs]:";
+	out << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << '\n';
 	
 	// S2
 	double x0, y0;
@@ -141,18 +185,38 @@ int main(int argc, char *argv[])
 
 	std::cin >> x0 >> y0 >> x1 >> y1;
 
-	std::cout << "Buscando cidades no intervalo [(" << x0 << ", " << y0 << "), (" << x1 << ", " << y1 << ")]...\n";
+	out << "Buscando cidades no intervalo [(" << x0 << ", " << y0 << "), (" << x1 << ", " << y1 << ")]...\n";
 
-	quadtree.desenhaMapaRegional(x0, y0, x1, y1);
-	std::list<Cidade*> cidadesNaRegiao = quadtree.buscaRegiao(x0, y0, x1, y1);
+	quad.desenhaMapaRegional(x0, y0, x1, y1);
+	std::list<Cidade*> cidadesNaRegiao = quad.buscaRegiao(x0, y0, x1, y1);
 
-	std::cout << "Numero de cidades encontradas: " << cidadesNaRegiao.size() << '\n';
+	out << "Numero de cidades encontradas: " << cidadesNaRegiao.size() << '\n';
 
-	for (const auto cidade_ptr: cidadesNaRegiao) {
-		std::cout << "Dados da cidade: " << *cidade_ptr << '\n';
-		std::cout << "Total de casos: ";
-		// total de casos
+	size_t casosNaRegiao = 0;
+	size_t totalComparacoes = 0;
+
+	begin = std::chrono::steady_clock::now();
+	for (const auto cidadePtr : cidadesNaRegiao) {
+		size_t casos = arv.totalCasosCidade(cidadePtr->codigo());
+		casosNaRegiao += casos;
+		totalComparacoes += arv.comparacoesUltimaTotalCasos();
+
+		// out << "Dados da cidade: " << *cidadePtr << '\n';
+		// out << "Total de casos: " << casos << '\n';
 	}
+	end = std::chrono::steady_clock::now();
+	out << "Total de casos na regiao: " << casosNaRegiao << '\n';
+	out << "Total de comparacoes: " << totalComparacoes << '\n';
+	out << "Tempo de busca total [µs]: ";
+	out << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "\n\n";
+}
 
-	return 0;
+template<typename ArvoreType>
+void insereNChavesDaTabela(ArvoreType& arv, HashTable& t, size_t n)
+{
+	std::vector<size_t> valores = t.getRandomHashes(n);
+
+	for (const auto& val : valores){
+		arv.insere(val);
+	}
 }
