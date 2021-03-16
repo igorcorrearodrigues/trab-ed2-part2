@@ -11,11 +11,11 @@ No::No(): info(), status(STATUS_LIVRE)
 
 static size_t h1(std::string codigo, std::string data)
 {
-	std::string s = codigo + data;
-	size_t hash = 0;
+	size_t hash = std::stoul(codigo);
 
-	for (auto c : s) {
-		hash = hash * 256 + c;
+	size_t pos = 0;
+	for (auto c : data) {
+		hash += (c + 31 * pos++);
 	}
 	return hash;
 }
@@ -25,9 +25,8 @@ static size_t h2(std::string codigo, std::string data)
 	std::string s = codigo + data;
 	size_t hash = 0;
 
-	size_t pos = 0;
 	for (auto c : s) {
-		hash += (c + 31 * pos++);
+		hash = hash * 256 + c;
 	}
 	return hash;
 }
@@ -36,7 +35,7 @@ static size_t getPos(std::string codigo, std::string data, size_t i)
 {
 	if (i == 0)
 		return h1(codigo, data) % TABLE_M;
-	return (h1(codigo, data) + i * h2(codigo, data)) % TABLE_M;
+	return (h1(codigo, data) + i * (h2(codigo, data)) % TABLE_M) % TABLE_M;
 }
 
 static size_t getPos(const Registro& r, size_t i)

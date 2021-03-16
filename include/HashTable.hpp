@@ -1,7 +1,7 @@
 #ifndef HASH_TABLE_HPP
 #define HASH_TABLE_HPP
 
-#define TABLE_M 1431490
+#define TABLE_M 1431491
 
 #include "Registro.hpp"
 #include <vector>
