@@ -25,17 +25,18 @@ static size_t h2(std::string codigo, std::string data)
 	std::string s = codigo + data;
 	size_t hash = 0;
 
+	size_t pos = 0;
 	for (auto c : s) {
-		hash = hash * 256 + c;
+		hash += 256 * (c + pos++);
 	}
-	return hash;
+	return hash % TABLE_M;
 }
 
 static size_t getPos(std::string codigo, std::string data, size_t i)
 {
 	if (i == 0)
 		return h1(codigo, data) % TABLE_M;
-	return (h1(codigo, data) + i * (h2(codigo, data)) % TABLE_M) % TABLE_M;
+	return (h1(codigo, data) + i * h2(codigo, data)) % TABLE_M;
 }
 
 static size_t getPos(const Registro& r, size_t i)
